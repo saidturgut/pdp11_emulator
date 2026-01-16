@@ -4,14 +4,38 @@ using Cycles;
 
 public class MicroUnit : MicroUnitROM
 {
-    public Decoder Decoder = new();
+    private readonly Decoder Decoder = new();
     
-    public MicroCycle currentCycle;
+    private ushort currentCycle;
+    private bool interrupt;
 
-    public void Emit()
+    public SignalSet Emit()
     {
+        if (interrupt)
+        {
+            return new SignalSet();
+        }
+
+        return MicroCycles[(int)decoded.MicroCycles[currentCycle]]();
     }
 
     public void Decode(ushort IR)
         => decoded = Decoder.Decode(IR);
+
+    public void Advance()
+    {
+        if (interrupt)
+        {
+            return;
+        }
+
+        if (currentCycle == decoded.MicroCycles.Count - 1)
+        {
+            currentCycle = 0;
+        }
+        else
+        {
+            currentCycle++;
+        }
+    }
 }

@@ -3,8 +3,8 @@ using Signaling.Cycles;
 
 public class Decoded
 {
-    public RegisterAction driver;
+    public RegisterAction[] Registers = [];
     
     public List<MicroCycle> MicroCycles 
-        = [MicroCycle.FETCH_MAR, MicroCycle.FETCH_INC, MicroCycle.FETCH_MDR];
+        = [MicroCycle.FETCH_MAR, MicroCycle.PC_INC, MicroCycle.FETCH_MDR];
 }

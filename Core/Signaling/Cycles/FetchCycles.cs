@@ -11,7 +11,7 @@ public partial class MicroUnitROM
         UNIBUSDrive = UNIBUSAction.READ,
     };
 
-    private static SignalSet FETCH_INC() => new()
+    private static SignalSet PC_INC() => new()
     {
         CPUBusDriver = RegisterAction.R7,
         ALUAction = new ALUAction(ALUOperation.ADD, 
