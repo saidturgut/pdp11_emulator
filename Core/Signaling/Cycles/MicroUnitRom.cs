@@ -1,7 +1,7 @@
 namespace pdp11_emulator.Core.Signaling.Cycles;
 using Decoding;
 
-public partial class MicroUnitROM
+public partial class MicroUnitRom
 {
     protected static Decoded decoded = new();
 
@@ -10,7 +10,7 @@ public partial class MicroUnitROM
         EMPTY,
         FETCH_MAR, PC_INC, FETCH_MDR,
         DECODE,
-
+    
         EA_REG, EA_REG_MAR,
         EA_INC, EA_DEC,
         EA_INDEX_MAR, EA_INDEX_MDR,

@@ -1,14 +1,14 @@
 namespace pdp11_emulator.Core.Decoding;
 using Signaling.Cycles;
 
-public partial class DecoderMUX
+public partial class DecoderMux
 {
     public MicroCycle[] FetchEngine =
     [
         MicroCycle.FETCH_MAR, MicroCycle.PC_INC, MicroCycle.FETCH_MDR, MicroCycle.DECODE,
     ];
 
-    private readonly MicroCycle[][] EAEngine =
+    private readonly MicroCycle[][] EaEngine =
     [
         /*0*/[MicroCycle.EA_REG],
         /*1*/[MicroCycle.EA_REG_MAR, MicroCycle.EA_RAM_MAR, MicroCycle.EA_RAM_MDR],

@@ -3,30 +3,25 @@ using pdp11_emulator.Core.Signaling;
 namespace pdp11_emulator.Core.Executing;
 using Components;
 
-public class DataPath
+public partial class DataPath
 {
     private readonly Register[] Registers =
     [
-        new (), // REGISTER O
-        new (), // REGISTER 1
-        new (), // REGISTER 2
-        new (), // REGISTER 3
-        new (), // REGISTER 4
-        new (), // REGISTER 5
-        new (), // STACK POINTER
-        new () // PROGRAM COUNTER
+        new (), // R0
+        new (), // R1
+        new (), // R2
+        new (), // R3
+        new (), // R4
+        new (), // R5
+        new (), // Sp
+        new () // Pc
     ];
 
-    private readonly Register MDR = new ();
-    private readonly Register IR = new ();
-    private readonly Register MAR = new ();
+    private readonly Register Mdr = new ();
+    private readonly Register Ir = new ();
+    private readonly Register Mar = new ();
 
     public void Init()
     {
-    }
-
-    public ushort Drive(Register signals)
-    {
-        return 0;
     }
 }

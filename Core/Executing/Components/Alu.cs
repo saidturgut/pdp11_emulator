@@ -1,6 +1,6 @@
 namespace pdp11_emulator.Core.Executing.Components;
 
-public class ALU
+public class Alu
 {
     
 }

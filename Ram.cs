@@ -1,6 +1,6 @@
 namespace pdp11_emulator;
 
-public class RAM
+public class Ram
 {
     private readonly byte[] Memory = new byte[256];
 

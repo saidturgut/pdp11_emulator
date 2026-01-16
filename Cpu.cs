@@ -3,10 +3,10 @@ using Core.Executing.Components;
 using Core.Executing;
 using Core.Signaling;
 
-public class CPU
+public class Cpu
 {
-    private readonly TriStateBus CPUBUS = new ();
-    private readonly TriStateBus ALUBUS = new ();
+    private readonly TriStateBus CpuBus = new ();
+    private readonly TriStateBus AluBus = new ();
     
     private readonly DataPath DataPath = new();
     private readonly MicroUnit MicroUnit = new();

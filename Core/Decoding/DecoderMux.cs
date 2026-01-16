@@ -2,7 +2,7 @@ using pdp11_emulator.Core.Signaling.Cycles;
 
 namespace pdp11_emulator.Core.Decoding;
 
-public partial class DecoderMUX
+public partial class DecoderMux
 {
     protected Decoded DOUBLE_OPERAND(ushort opcode)
     {
@@ -16,8 +16,8 @@ public partial class DecoderMUX
             Registers = [(RegisterAction)(zzz_xxx(source)), 
                 (RegisterAction)zzz_xxx(destination)],
         };
-        decoded.MicroCycles.AddRange(EAEngine[xxx_zzz(source)]);
-        decoded.MicroCycles.AddRange(EAEngine[xxx_zzz(destination)]);
+        decoded.MicroCycles.AddRange(EaEngine[xxx_zzz(source)]);
+        decoded.MicroCycles.AddRange(EaEngine[xxx_zzz(destination)]);
 
         return decoded;
     }
@@ -31,7 +31,7 @@ public partial class DecoderMUX
         {
             Registers = [(RegisterAction)(zzz_xxx(source))],
         };
-        decoded.MicroCycles.AddRange(EAEngine[xxx_zzz(source)]);
+        decoded.MicroCycles.AddRange(EaEngine[xxx_zzz(source)]);
         
         return decoded;
     }

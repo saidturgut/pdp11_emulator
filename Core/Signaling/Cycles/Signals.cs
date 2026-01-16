@@ -2,27 +2,27 @@ namespace pdp11_emulator.Core.Signaling.Cycles;
 
 public struct SignalSet()
 {
-    public UNIBUSAction UNIBUSLatch = UNIBUSAction.NONE; // MDR
-    public RegisterAction CPUBusDriver = RegisterAction.NONE;
-    public ALUAction? ALUAction = null;
-    public RegisterAction CPUBusLatcher = RegisterAction.NONE;
-    public UNIBUSAction UNIBUSDrive = UNIBUSAction.NONE; // MAR
+    public UniBusAction UniBusLatch = UniBusAction.NONE; // MDR
+    public RegisterAction CpuBusDriver = RegisterAction.NONE;
+    public AluAction? AluAction = null;
+    public RegisterAction CpuBusLatcher = RegisterAction.NONE;
+    public UniBusAction UniBusDrive = UniBusAction.NONE; // MAR
 }
 
-public struct ALUAction(ALUOperation operation, 
+public struct AluAction(AluOperation operation, 
     RegisterAction registerOperand , ushort constOperand)
 {
-    public ALUOperation ALUOperation = operation;
+    public AluOperation AluOperation = operation;
     public RegisterAction RegisterOperand = registerOperand;
     public ushort ConstOperand = constOperand;
 }
 
-public enum UNIBUSAction
+public enum UniBusAction
 {
     NONE, READ, WRITE,
 }
 
-public enum ALUOperation
+public enum AluOperation
 {
     NONE, ADD, SUB
 }

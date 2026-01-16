@@ -1,15 +1,15 @@
 namespace pdp11_emulator;
 using Core.Executing.Components;
 
-public class PDP11
+public class Pdp11
 {
-    private readonly TriStateBus UNIBUS = new ();
+    private readonly TriStateBus UniBus = new ();
     
     // MASTERS
-    private readonly CPU CPU = new ();
+    private readonly Cpu Cpu = new ();
     
     // SLAVES
-    private readonly RAM RAM = new ();
+    private readonly Ram Ram = new ();
     
     private bool HALT = false;
     
@@ -17,7 +17,7 @@ public class PDP11
 
     private void Clock()
     {
-        CPU.Init();
+        Cpu.Init();
         
         while (!HALT)
         {
@@ -27,6 +27,6 @@ public class PDP11
     
     private void Tick()
     {
-        CPU.Tick(UNIBUS);
+        Cpu.Tick(UniBus);
     }
 }

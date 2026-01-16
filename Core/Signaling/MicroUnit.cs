@@ -2,7 +2,7 @@ namespace pdp11_emulator.Core.Signaling;
 using Decoding;
 using Cycles;
 
-public class MicroUnit : MicroUnitROM
+public class MicroUnit : MicroUnitRom
 {
     private readonly Decoder Decoder = new();
     
@@ -19,8 +19,8 @@ public class MicroUnit : MicroUnitROM
         return MicroCycles[(int)decoded.MicroCycles[currentCycle]]();
     }
 
-    public void Decode(ushort IR)
-        => decoded = Decoder.Decode(IR);
+    public void Decode(ushort ir)
+        => decoded = Decoder.Decode(ir);
 
     public void Advance()
     {
