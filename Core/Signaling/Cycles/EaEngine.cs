@@ -16,7 +16,7 @@ public partial class MicroUnitRom
     {
         CpuBusDriver = decoded.Drivers[registersIndex],
         CpuBusLatcher = RegisterAction.MAR,
-        UniBusDriving = UniBusDriving.READ,
+        UniBusDriving = UniBusDriving.READ_WORD,
     };
 
     private static SignalSet EA_INC() => new()
@@ -38,7 +38,7 @@ public partial class MicroUnitRom
     {
         CpuBusDriver = RegisterAction.R7,
         CpuBusLatcher = RegisterAction.MAR,
-        UniBusDriving = UniBusDriving.READ,
+        UniBusDriving = UniBusDriving.READ_WORD,
     };
     private static SignalSet EA_INDEX_MDR() => new()
     {
@@ -47,7 +47,7 @@ public partial class MicroUnitRom
         AluAction = new AluAction(AluOperation.ADD, 
             decoded.Drivers[registersIndex], 0),
         CpuBusLatcher = RegisterAction.MAR,
-        UniBusDriving = UniBusDriving.READ,
+        UniBusDriving = UniBusDriving.READ_WORD,
     };
     
     private static SignalSet EA_RAM_MAR() => new()
@@ -55,11 +55,12 @@ public partial class MicroUnitRom
         UniBusLatching = UniBusLatching.READ_WORD,
         CpuBusDriver = RegisterAction.MDR,
         CpuBusLatcher = RegisterAction.MAR,
-        UniBusDriving = UniBusDriving.READ,
+        UniBusDriving = UniBusDriving.READ_WORD,
     };
     private static SignalSet EA_RAM_MDR() => new()
     {
-        UniBusLatching = (UniBusLatching)decoded.StepSize,
+        UniBusLatching = decoded.StepSize == 1 
+            ? UniBusLatching.READ_BYTE : UniBusLatching.READ_WORD,
         CpuBusDriver = RegisterAction.MDR,
         CpuBusLatcher = EaLatchers[registersIndex],
     };// EXIT

@@ -9,6 +9,8 @@ public struct SignalSet()
     public AluAction? AluAction = null;
     public RegisterAction CpuBusLatcher = RegisterAction.NONE;
     public UniBusDriving UniBusDriving = UniBusDriving.NONE; // MAR
+
+    public bool ByteMode = false;
 }
 
 public struct AluAction(AluOperation operation, 
@@ -21,7 +23,8 @@ public struct AluAction(AluOperation operation,
 
 public enum UniBusDriving
 {
-    NONE, READ, WRITE,
+    NONE, READ_BYTE, READ_WORD
+    , WRITE_BYTE, WRITE_WORD,
 }
 
 public enum UniBusLatching

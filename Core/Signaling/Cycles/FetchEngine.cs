@@ -9,7 +9,7 @@ public partial class MicroUnitRom
     {
         CpuBusDriver = RegisterAction.R7,
         CpuBusLatcher = RegisterAction.MAR,
-        UniBusDriving = UniBusDriving.READ,
+        UniBusDriving = UniBusDriving.READ_WORD,
     };
 
     private static SignalSet PC_INC() => new()
@@ -23,7 +23,7 @@ public partial class MicroUnitRom
     private static SignalSet FETCH_MDR() => new()
     {
         UniBusLatching = UniBusLatching.READ_WORD,
-        CpuBusDriver = RegisterAction.MAR,
+        CpuBusDriver = RegisterAction.MDR,
         CpuBusLatcher = RegisterAction.IR,
     };
 

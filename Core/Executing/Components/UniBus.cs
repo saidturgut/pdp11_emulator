@@ -1,3 +1,5 @@
+using pdp11_emulator.Core.Signaling;
+
 namespace pdp11_emulator.Core.Executing.Components;
 
 public class UniBus
@@ -6,6 +8,14 @@ public class UniBus
     private ushort data;
     
     public readonly Request?[] requesters = new Request?[5];
+
+    public bool respondPermit;
+    public UniBusDriving operation;
+
+    public void Clear()
+    {
+        respondPermit = false;
+    }
     
     public void Request(Request request)
     {
@@ -18,9 +28,13 @@ public class UniBus
         {
             if (requesters[i] != null)
             {
-                address = requesters[i]!.Value.Address;
-                data = requesters[i]!.Value.Data;
+                var requester = requesters[i]!.Value;
+                address = requester.Address;
+                data = requester.Data;
+                operation = requester.Operation;
+                
                 requesters[i] = null;
+                respondPermit = true;
                 return;
             }
         }
@@ -41,6 +55,7 @@ public struct Request
     public byte Requester;
     public ushort Address;
     public ushort Data;
+    public UniBusDriving Operation;
 }
 
 public enum Requester

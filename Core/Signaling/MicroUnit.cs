@@ -10,6 +10,8 @@ public class MicroUnit : MicroUnitRom
     
     private bool INTERRUPT;
     private bool TRAP;
+    
+    public bool HALT;
 
     public SignalSet Emit(ushort ir)
     {
@@ -27,9 +29,17 @@ public class MicroUnit : MicroUnitRom
     
     public void Advance()
     {
+        Console.WriteLine($"CURRENT CYCLE : {decoded.MicroCycles[currentCycle]}");
+        
+        if (decoded.MicroCycles[currentCycle] is MicroCycle.HALT)
+        {
+            HALT = true;
+            return;
+        }
+        
         if (INTERRUPT)
             return;
-
+        
         if (ToggleCycles.Contains(decoded.MicroCycles[currentCycle]))
             registersIndex = (byte)(registersIndex == 0 ? 1 : 0);
 

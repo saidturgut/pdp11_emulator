@@ -11,6 +11,8 @@ public class Cpu
     private readonly DataPath DataPath = new();
     private readonly MicroUnit MicroUnit = new();
     
+    public bool HALT;
+    
     public void Init()
     {
         DataPath.Init();
@@ -32,5 +34,7 @@ public class Cpu
         DataPath.Debug();
         
         MicroUnit.Advance();
+
+        HALT = MicroUnit.HALT;
     }
 }

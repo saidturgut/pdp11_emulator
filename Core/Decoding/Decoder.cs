@@ -1,10 +1,20 @@
+using pdp11_emulator.Core.Signaling.Cycles;
+
 namespace pdp11_emulator.Core.Decoding;
 using Multiplexer;
 
 public class Decoder : DecoderMux
 {
+    public MicroCycle[] FixedOpcodes =
+    [
+        MicroCycle.HALT, // 0x1
+    ];
+    
     public Decoded Decode(ushort IR)
     {
+        if (IR < FixedOpcodes.Length)
+            return FIXED_OPCODE(FixedOpcodes[IR]);
+        
         if ((IR & 0xF000) >= 0x1000 && (IR & 0xF000) <= 0x6000)
             return DOUBLE_OPERAND(IR);
         if ((IR & 0xF800) == 0x0800)

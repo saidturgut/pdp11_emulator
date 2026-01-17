@@ -9,6 +9,7 @@ public class Pdp11
     private readonly Cpu Cpu = new ();
     
     // RESPONDERS
+    private readonly Rom Rom = new ();
     private readonly Ram Ram = new ();
     
     private bool HALT;
@@ -17,18 +18,22 @@ public class Pdp11
 
     private void Clock()
     {
+        Rom.Boot(Ram);
+        
         Cpu.Init();
         
         while (!HALT)
         {
             Tick();
             
-            Thread.Sleep(25);
+            Thread.Sleep(50);
         }
     }
     
     private void Tick()
     {
+        UniBus.Clear();
+        
         // REQUESTERS
         Cpu.Tick(UniBus);
         
@@ -36,5 +41,7 @@ public class Pdp11
 
         // RESPONDERS
         Ram.Respond(UniBus);
+
+        HALT = Cpu.HALT;
     }
 }

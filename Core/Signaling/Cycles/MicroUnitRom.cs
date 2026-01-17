@@ -10,12 +10,15 @@ public partial class MicroUnitRom
     [
         EMPTY,
         FETCH_MAR, PC_INC, FETCH_MDR,
-        DECODE,
+        DECODE, HALT,
     
         EA_REG, EA_REG_MAR,
         EA_INC, EA_DEC,
         EA_INDEX_MAR, EA_INDEX_MDR,
         EA_RAM_MAR, EA_RAM_MDR,
+        
+        ALU_EXECUTE,
+        WRITE_BACK_REG, WRITE_BACK_RAM,
     ];
 
     protected static readonly MicroCycle[] ToggleCycles =
@@ -28,12 +31,13 @@ public enum MicroCycle
 { 
     EMPTY,
     FETCH_MAR, PC_INC, FETCH_MDR,
-    DECODE,
+    DECODE, HALT,
     
     EA_REG, EA_REG_MAR,
     EA_INC, EA_DEC,
     EA_INDEX_MAR, EA_INDEX_MDR,
     EA_RAM_MAR, EA_RAM_MDR,
-    
-    ALU_EXECUTE, WRITE_BACK,
+        
+    ALU_EXECUTE,
+    WRITE_BACK_REG, WRITE_BACK_RAM,
 }

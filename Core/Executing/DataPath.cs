@@ -31,6 +31,13 @@ public partial class DataPath
     
     public void Init()
     {
+        Access(RegisterAction.R0).Set(8);
+        Access(RegisterAction.R1).Set(5);
+        Access(RegisterAction.R2).Set(1);
+        Access(RegisterAction.R3).Set(4);
+        Access(RegisterAction.R4).Set(7);
+        Access(RegisterAction.R5).Set(9);
+        Access(RegisterAction.R7).Set(0x0200);
     }
 
     public void Clear(TriStateBus cpuBus, TriStateBus aluBus)

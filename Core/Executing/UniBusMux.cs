@@ -25,15 +25,12 @@ public partial class DataPath
         if(signals.UniBusDriving is UniBusDriving.NONE)
             return;
 
-        Request request = new Request
+        uniBus.Request(new Request
         {
             Requester = (byte)requesterType,
             Address = Access(RegisterAction.MAR).Get(),
-        };
-
-        if (signals.UniBusDriving == UniBusDriving.WRITE)
-            request.Data = Access(RegisterAction.TMP).Get();
-        
-        uniBus.Request(request);
+            Data = Access(RegisterAction.TMP).Get(),
+            Operation = signals.UniBusDriving,
+        });
     }
 }

@@ -9,7 +9,8 @@ public partial class DataPath
         if(signals.CpuBusDriver is RegisterAction.NONE)
             return;
         
-        cpuBus.Set(Access(signals.CpuBusDriver).Get());
+        cpuBus.Set((ushort)(Access(signals.CpuBusDriver).Get() 
+                            & (signals.ByteMode ? 0x00FF : 0xFFFF)));
     }
     
     public void CpuBusLatch(TriStateBus cpuBus, TriStateBus aluBus)

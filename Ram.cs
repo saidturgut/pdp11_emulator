@@ -1,17 +1,39 @@
-using pdp11_emulator.Core.Executing.Components;
-
 namespace pdp11_emulator;
+using Core.Executing.Components;
+using Core.Signaling;
+using Misc;
 
 public class Ram
 {
-    private readonly byte[] Memory = new byte[256];
+    private readonly byte[] Memory = new byte[0x10000];
 
+    public void LoadImage(byte[] image, bool hexDump)
+    {
+        for (int i = 0; i < image.Length; i++)
+            Memory[i] = image[i];
+
+        if (hexDump)
+            HexDump.Write(Memory);
+    }
+    
     public void Respond(UniBus uniBus)
     {
-        if(uniBus.GetAddress() >= 0x8000)
+        if(uniBus.GetAddress() >= 0x8000 || !uniBus.respondPermit)
             return;
 
-        uniBus.SetData(ReadWord(uniBus.GetAddress()));
+        switch (uniBus.operation)
+        {
+            case UniBusDriving.READ_WORD:
+                uniBus.SetData(ReadWord(uniBus.GetAddress())); break;
+            case UniBusDriving.READ_BYTE:
+                uniBus.SetData(ReadByte(uniBus.GetAddress())); break;
+            case UniBusDriving.WRITE_WORD:
+                WriteWord(uniBus.GetAddress(), uniBus.GetData()); break;
+            case UniBusDriving.WRITE_BYTE:
+                WriteByte(uniBus.GetAddress(), (byte)uniBus.GetData()); break;
+            default:
+                throw new Exception("UNKNOWN OPERATION!");
+        } 
     }
     
     private ushort ReadWord(ushort address)
@@ -33,6 +55,8 @@ public class Ram
 
         Memory[address] = (byte)(value & 0xFF);
         Memory[address + 1] = (byte)(value >> 6);
+
+        Console.WriteLine($"MEMORY : {value}");
     }
 
     private byte ReadByte(ushort address) 

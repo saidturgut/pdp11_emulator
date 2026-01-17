@@ -4,6 +4,13 @@ using Signaling;
 
 public partial class DecoderMux : DecoderRom
 {
+    protected Decoded FIXED_OPCODE(MicroCycle microCycle)
+    {
+        Decoded decoded = new();
+        decoded.MicroCycles.Add(microCycle);
+        return decoded;
+    }
+    
     protected Decoded BRANCH(ushort opcode)
     {
         Decoded decoded = new();
