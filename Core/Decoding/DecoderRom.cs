@@ -21,9 +21,13 @@ public class DecoderRom
         /*7*/[MicroCycle.EA_INDEX_MAR, MicroCycle.PC_INC, MicroCycle.EA_INDEX_MDR, MicroCycle.EA_RAM_MAR, MicroCycle.EA_RAM_MDR],
     ];
 
-    public AluFlag[] FlagMasks =
+    protected readonly AluFlag[] FlagMasks =
     [
-        AluFlag.Trace | AluFlag.Negative | AluFlag.Zero | AluFlag.Overflow | AluFlag.Carry,
-        AluFlag.Trace | AluFlag.Negative | AluFlag.Zero | AluFlag.Overflow,
+        AluFlag.Negative | AluFlag.Zero | AluFlag.Overflow | AluFlag.Carry,
+        AluFlag.Negative | AluFlag.Zero | AluFlag.Overflow,
     ];
+    protected enum FlagMask
+    {
+        NZOC, NZO,
+    }
 }

@@ -32,8 +32,8 @@ public partial class DataPath
     
     public void Init()
     {
-        Access(RegisterAction.R0).Set(4);
-        Access(RegisterAction.R1).Set(8);
+        Access(RegisterAction.R0).Set(0x8000);
+        Access(RegisterAction.R1).Set(0x0001);
         Access(RegisterAction.R2).Set(64);
         Access(RegisterAction.R3).Set(128);
         Access(RegisterAction.R4).Set(192);

@@ -8,11 +8,18 @@ public partial class MicroUnitRom
     {
     };
     
-    private static SignalSet ALU_EXECUTE() => new()
+    private static SignalSet EXE_WRITE_BACK() => new()
     {
         CpuBusDriver = RegisterAction.TMP,
         AluAction = new AluAction(decoded.AluOperation, 
             RegisterAction.DST, 0, decoded.FlagMask),
         CpuBusLatcher = RegisterAction.TMP,
+    };
+
+    private static SignalSet EXE_FLAGS() => new()
+    {
+        CpuBusDriver = RegisterAction.TMP,
+        AluAction = new AluAction(decoded.AluOperation,
+            RegisterAction.DST, 0, decoded.FlagMask),
     };
 }

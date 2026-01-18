@@ -1,2 +1,2 @@
         .org    01000        
-ADD R0, R1
+bis R0, R1

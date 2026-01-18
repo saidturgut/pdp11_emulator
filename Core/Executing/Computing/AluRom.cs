@@ -18,5 +18,5 @@ public enum AluFlag
 
 public enum AluOperation
 {
-    NONE, ADD, SUB, OR, AND, XOR, NAND, ZERO
+    NONE ,MOV ,ADD, SUB, OR, AND, XOR, NAND, ZERO
 }

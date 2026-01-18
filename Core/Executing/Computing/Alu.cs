@@ -9,6 +9,11 @@ public class Alu
         
         switch (input.Operation)
         {
+            case AluOperation.MOV:
+            {
+                output.Result = input.B;
+                break;
+            }
             case AluOperation.ADD:
             {
                 uint sum = (uint)(input.A + input.B);
@@ -16,7 +21,7 @@ public class Alu
                 
                 if ((sum & 0x10000) != 0) 
                     output.Flags |= (ushort)AluFlag.Carry;
-                if (((~(input.A ^ input.B)) & (input.A ^ output.Result) & 0x8000) != 0) 
+                if ((~(input.A ^ input.B) & (input.A ^ output.Result) & 0x8000) != 0) 
                     output.Flags |= (ushort)AluFlag.Overflow;
                 break;
             }
@@ -29,6 +34,21 @@ public class Alu
                     output.Flags |= (ushort)AluFlag.Carry;
                 if (((input.A ^ input.B) & (input.A ^ output.Result) & 0x8000) != 0)
                     output.Flags |= (ushort)AluFlag.Overflow;
+                break;
+            }
+            case AluOperation.AND:
+            {
+                output.Result = (ushort)(input.A & input.B); 
+                break;
+            }
+            case AluOperation.NAND:
+            {
+                output.Result = (ushort)(input.A & ~input.B); 
+                break;
+            }
+            case AluOperation.OR:
+            {
+                output.Result = (ushort)(input.A | input.B); 
                 break;
             }
             default:

@@ -17,9 +17,9 @@ public partial class DataPath
         AluOutput output = Alu.Compute(new AluInput
         {
             Operation = action.AluOperation,
-            A = cpuBus.Get(),
-            B = action.RegisterOperand != RegisterAction.NONE ? 
+            A = action.RegisterOperand != RegisterAction.NONE ? 
                 Access(action.RegisterOperand).Get() : action.ConstOperand,
+            B = cpuBus.Get(),
         });
         
         aluBus.Set(output.Result);
