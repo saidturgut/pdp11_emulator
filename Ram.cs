@@ -1,7 +1,7 @@
 namespace pdp11_emulator;
-using Core.Executing.Components;
-using Core.Signaling;
-using Misc.External;
+using Executing.Components;
+using Signaling;
+using Utility;
 
 public class Ram
 {

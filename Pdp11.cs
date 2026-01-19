@@ -1,12 +1,12 @@
 namespace pdp11_emulator;
-using Core.Executing.Components;
+using Executing.Components;
 
 public class Pdp11
 {
     private readonly UniBus UniBus = new ();
     
     // REQUESTERS
-    private readonly Cpu Cpu = new ();
+    private readonly Kd11 Kd11 = new ();
     
     // RESPONDERS
     private readonly Rom Rom = new ();
@@ -20,7 +20,7 @@ public class Pdp11
     {
         Rom.Boot(Ram);
         
-        Cpu.Init();
+        Kd11.Init();
         
         while (!HALT)
         {
@@ -35,13 +35,13 @@ public class Pdp11
         UniBus.Clear();
         
         // REQUESTERS
-        Cpu.Tick(UniBus);
+        Kd11.Tick(UniBus);
         
         UniBus.Arbitrate();
 
         // RESPONDERS
         Ram.Respond(UniBus);
 
-        HALT = Cpu.HALT;
+        HALT = Kd11.HALT;
     }
 }
