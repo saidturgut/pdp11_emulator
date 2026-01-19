@@ -1,2 +1,2 @@
 .org 0
-BIS R1, R0
+ROL R0 (C = 1)

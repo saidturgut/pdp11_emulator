@@ -5,13 +5,23 @@ using Signaling;
 
 public partial class DecoderMux
 {
-    protected Decoded ONE_OPERAND(ushort opcode)
+    protected Decoded ONE_OPERAND(ushort ir)
     {
         Decoded decoded = new()
         {
-            Drivers = [(Register)(opcode & 0x7)],
-            AluOperation = SingleOperandTable[(opcode >> 6) & 0x7],
+            Drivers = [(Register)(ir & 0x7)],
+            
+            AluOperation = (ir >> 6) switch
+            {
+                0x30 => AluOperation.ROR,
+                0x31 => AluOperation.ROL,
+                0x32 => AluOperation.ASR,
+                0x33 => AluOperation.ASL,
+                _ => SingleOperandTable[(ir >> 6) & 0x7],
+            },
         };
+        
+        Console.WriteLine("OPERATION  " + decoded.AluOperation);
         
         // FLAG MASK
         decoded.FlagMask = decoded.AluOperation switch
@@ -22,12 +32,13 @@ public partial class DecoderMux
         };
         
         // EA AND EXE ENGINES
-        decoded.MicroCycles.AddRange(EaEngine[(opcode >> 3) & 0x7]);
+        decoded.MicroCycles.AddRange(EaEngine[(ir >> 3) & 0x7]);
         decoded.MicroCycles.Add(MicroCycle.EXE_WRITE_BACK);
 
         // WRITE BACK ENGINE
         if (decoded.AluOperation is not AluOperation.PASS)
-            decoded.MicroCycles.Add(MicroCycle.WRITE_BACK);
+            decoded.MicroCycles.Add(
+                ((ir >> 3) & 0x7) == 0 ? MicroCycle.WRITE_BACK : MicroCycle.WRITE_BACK_RAM);
         
         return decoded;
     }
