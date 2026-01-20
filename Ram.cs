@@ -85,7 +85,7 @@ public class Ram
         }
 
         Memory[address] = (byte)(value & 0xFF);
-        Memory[address + 1] = (byte)(value >> 6);
+        Memory[address + 1] = (byte)(value >> 8);
 
         Console.WriteLine($"MEMORY [{O(address)}] : {O(value)}");
     }

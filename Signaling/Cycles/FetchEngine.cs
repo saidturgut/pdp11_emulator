@@ -6,7 +6,7 @@ public partial class ControlUnitRom
 {
     private static SignalSet EMPTY() => new();
 
-    private static SignalSet FETCH_MAR() => new()
+    private static SignalSet FETCH_READ() => new()
     {
         CpuBusDriver = Register.R7,
         CpuBusLatcher = Register.MAR,
@@ -17,11 +17,11 @@ public partial class ControlUnitRom
     {
         CpuBusDriver = Register.R7,
         AluAction = new AluAction(AluOperation.ADD, 
-            Register.NONE, AluFlag.None),
+            Register.NONE, 2, AluFlag.None),
         CpuBusLatcher = Register.R7,
     };
 
-    private static SignalSet FETCH_MDR() => new()
+    private static SignalSet FETCH_LATCH() => new()
     {
         UniBusLatching = true,
         CpuBusDriver = Register.MDR,

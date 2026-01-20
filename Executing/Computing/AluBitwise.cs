@@ -5,9 +5,9 @@ public partial class AluRom
     private static AluOutput ASR(AluInput input)
     {
         AluOutput output = new()
-            { Result = (ushort)((input.A >> 1) | (input.A & 0x8000)) };
+            { Result = (ushort)((input.A >> 1) | (input.A & x8000)) };
 
-        if ((input.A & 0x0001) != 0)
+        if ((input.A & 1) != 0)
             output.Flags |= (ushort)AluFlag.Carry;
 
         return output;
@@ -17,10 +17,10 @@ public partial class AluRom
         AluOutput output = new()
             { Result = (ushort)(input.A << 1) };
         
-        if ((input.A & 0x8000) != 0)
+        if ((input.A & x8000) != 0)
             output.Flags |= (ushort)AluFlag.Carry;
 
-        if ((output.Result & 0x8000) != 0 ^ (input.A & 0x8000) != 0)
+        if ((output.Result & x8000) != 0 ^ (input.A & x8000) != 0)
             output.Flags |= (ushort)AluFlag.Overflow;
 
         return output;        
@@ -29,9 +29,9 @@ public partial class AluRom
     private static AluOutput ROR(AluInput input)
     {
         AluOutput output = new()
-            { Result = (ushort)((input.A >> 1) | (input.C ? 0x8000 : 0)) };
+            { Result = (ushort)((input.A >> 1) | (input.C ? x8000 : 0)) };
 
-        if ((input.A & 0x0001) != 0)
+        if ((input.A & 1) != 0)
             output.Flags |= (ushort)AluFlag.Carry;
 
         return output;
@@ -41,8 +41,11 @@ public partial class AluRom
         AluOutput output = new()
             { Result = (ushort)((input.A << 1) | (input.C ? 1 : 0)) };
 
-        if ((input.A & 0x8000) != 0)
+        if ((input.A & x8000) != 0)
             output.Flags |= (ushort)AluFlag.Carry;
+        
+        if ((output.Result & x8000) != 0 ^ (input.A & x8000) != 0)
+            output.Flags |= (ushort)AluFlag.Overflow;
 
         return output;
     }

@@ -5,10 +5,10 @@ public partial class AluRom
     private static AluOutput ZERO(AluInput input) => new()
         { Result = 0 };
 
-    private static AluOutput NOT(AluInput input)
+    private static AluOutput COM(AluInput input)
     {
         AluOutput output = new()
-            { Result = (ushort)(~input.A & 0xFFFF) };
+            { Result = (ushort)(~input.A & xFFFF) };
 
         return output;
     }
@@ -16,9 +16,9 @@ public partial class AluRom
     private static AluOutput INC(AluInput input)
     {
         AluOutput output = new()
-            { Result = (ushort)((input.A + 1) & 0xFFFF) };
+            { Result = (ushort)((input.A + 1) & xFFFF) };
 
-        if (input.A == 0x8000 - 1)
+        if (input.A == x8000 - 1)
             output.Flags |= (ushort)AluFlag.Overflow;
         
         return output;
@@ -26,9 +26,9 @@ public partial class AluRom
     private static AluOutput DEC(AluInput input)
     {
         AluOutput output = new()
-            { Result = (ushort)((input.A - 1) & 0xFFFF) };
+            { Result = (ushort)((input.A - 1) & xFFFF) };
 
-        if (input.A == 0x8000)
+        if (input.A == x8000)
             output.Flags |= (ushort)AluFlag.Overflow;
         
         return output;
@@ -36,12 +36,12 @@ public partial class AluRom
     private static AluOutput NEG(AluInput input)
     {
         AluOutput output = new()
-            { Result = (ushort)((0 - input.A) & 0xFFFF) };
+            { Result = (ushort)(-input.A & xFFFF) };
 
-        if ((input.A & 0xFFFF) != 0)
+        if ((input.A & xFFFF) != 0)
             output.Flags |= (ushort)AluFlag.Carry;
 
-        if ((input.A & 0xFFFF) == 0x8000)
+        if ((input.A & xFFFF) == x8000)
             output.Flags |= (ushort)AluFlag.Overflow;
         
         return output;
@@ -51,7 +51,7 @@ public partial class AluRom
     {
         AluOutput output = input.C ? INC(input) : PASS(input);
         
-        if (input is { C: true, A: 0xFFFF })
+        if(input.C && input.A == 0)
             output.Flags |= (ushort)AluFlag.Carry;
         
         return output;
@@ -60,7 +60,7 @@ public partial class AluRom
     {
         AluOutput output = input.C ? DEC(input) : PASS(input);
         
-        if (!input.C || input.A != 0x0000)
+        if (!input.C || input.A != 0)
             output.Flags |= (ushort)AluFlag.Carry;
         
         return output;

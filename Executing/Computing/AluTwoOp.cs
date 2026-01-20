@@ -4,18 +4,18 @@ public partial class AluRom
 {
     private static AluOutput NONE(AluInput input) => new();
     private static AluOutput PASS(AluInput input) => new() 
-        { Result = input.B };
+        { Result = input.A };
 
     private static AluOutput ADD(AluInput input)
     {
         AluOutput output = new();
         var sum = (uint)(input.A + input.B);
-        output.Result = (ushort)(sum & 0xFFFF);
+        output.Result = (ushort)(sum & xFFFF);
         
-        if ((sum & 0x10000) != 0)
+        if ((sum & x10000) != 0)
             output.Flags |= (ushort)AluFlag.Carry;
 
-        if ((~(input.A ^ input.B) & (input.A ^ output.Result) & 0x8000) != 0)
+        if ((~(input.A ^ input.B) & (input.A ^ output.Result) & x8000) != 0)
             output.Flags |= (ushort)AluFlag.Overflow;
         
         return output;
@@ -24,21 +24,21 @@ public partial class AluRom
     {
         AluOutput output = new();
         var sum = (uint)(input.A - input.B);
-        output.Result = (ushort)(sum & 0xFFFF);
+        output.Result = (ushort)(sum & xFFFF);
         
-        if ((sum & 0x10000) == 0)
+        if ((sum & x10000) == 0)
             output.Flags |= (ushort)AluFlag.Carry;
 
-        if (((input.A ^ input.B) & (input.A ^ output.Result) & 0x8000) != 0)
+        if (((input.A ^ input.B) & (input.A ^ output.Result) & x8000) != 0)
             output.Flags |= (ushort)AluFlag.Overflow;
 
         return output;
     }
     
-    private static AluOutput AND(AluInput input) => new() 
+    private static AluOutput BIT(AluInput input) => new() 
         { Result = (ushort)(input.A & input.B) };
-    private static AluOutput NAND(AluInput input) => new() 
+    private static AluOutput BIC(AluInput input) => new() 
         { Result = (ushort)(input.A & ~input.B) };
-    private static AluOutput OR(AluInput input) => new() 
+    private static AluOutput BIS(AluInput input) => new() 
         { Result = (ushort)(input.A | input.B) };
 }

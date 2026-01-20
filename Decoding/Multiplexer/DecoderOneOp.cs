@@ -33,19 +33,19 @@ public partial class DecoderMux
         
         // EA AND EXE ENGINES
         decoded.MicroCycles.AddRange(EaEngine[(ir >> 3) & 0x7]);
-        decoded.MicroCycles.Add(MicroCycle.EXE_WRITE_BACK);
+        decoded.MicroCycles.Add(MicroCycle.EXE_LATCH);
 
         // WRITE BACK ENGINE
         if (decoded.AluOperation is not AluOperation.PASS)
             decoded.MicroCycles.Add(
-                ((ir >> 3) & 0x7) == 0 ? MicroCycle.WRITE_BACK : MicroCycle.WRITE_BACK_RAM);
+                ((ir >> 3) & 0x7) == 0 ? MicroCycle.WRITE_BACK_ONE : MicroCycle.WRITE_BACK_RAM);
         
         return decoded;
     }
 
     private readonly AluOperation[] SingleOperandTable =
     [
-        AluOperation.ZERO, AluOperation.NOT, AluOperation.INC, AluOperation.DEC,
+        AluOperation.ZERO, AluOperation.COM, AluOperation.INC, AluOperation.DEC,
         AluOperation.NEG, AluOperation.ADC, AluOperation.SBC, AluOperation.PASS,
         AluOperation.ASR, AluOperation.ASL, AluOperation.ROR, AluOperation.ROL, AluOperation.SWAB,
     ];

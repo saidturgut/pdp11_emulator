@@ -9,13 +9,19 @@ public struct SignalSet()
     public AluAction? AluAction = null;
     public Register CpuBusLatcher = Register.NONE;
     public UniBusDriving UniBusDriving = UniBusDriving.NONE; // MAR
+
+    public bool UseByteMode = false;
 }
 
-public struct AluAction(AluOperation operation, 
-    Register registerOperand , AluFlag flagMask)
+public struct AluAction(
+    AluOperation operation,
+    Register registerOperand,
+    byte stepSize,
+    AluFlag flagMask)
 {
     public readonly AluOperation AluOperation = operation;
     public readonly Register RegisterOperand = registerOperand;
+    public readonly byte StepSize = stepSize;
     public readonly AluFlag FlagMask = flagMask;
 }
 

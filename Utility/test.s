@@ -1,2 +1,2 @@
 .org 0
-ROL R0 (C = 1)
+MOVB -(r2),r4+

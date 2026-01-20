@@ -9,6 +9,12 @@ public partial class DecoderMux
     {
         // SELECT TYPE
         byte operation = fzzz;
+        bool byteMode = false;
+        if (fzzz != 6 && (ir & 0x8000) != 0)
+        {
+            byteMode = true;
+            operation -= 8;
+        }
         if (fzzz == 0xE) operation = 7;
         
         TwoOperandType type = (TwoOperandType)operation;
@@ -18,7 +24,8 @@ public partial class DecoderMux
         {
             Drivers = [(Register)((ir >> 6)  & 0x7), (Register)(ir & 0x7)],
             AluOperation = TwoOperandTable[(ushort)type],
-            FlagMask = FlagMasks[type == TwoOperandType.MOV ? FlagMask.NZO : FlagMask.NZOC], 
+            FlagMask = FlagMasks[type == TwoOperandType.MOV ? FlagMask.NZO : FlagMask.NZOC],
+            ByteMode = byteMode,
         };
         
         // EFFECTIVE ADDRESS ENGINE
@@ -29,13 +36,13 @@ public partial class DecoderMux
 
         // EXECUTE ENGINE
         decoded.MicroCycles.Add(type is not (TwoOperandType.MOV or TwoOperandType.CMP or TwoOperandType.BIT)
-            ? MicroCycle.EXE_WRITE_BACK : MicroCycle.EXE_FLAGS);
+            ? MicroCycle.EXE_LATCH : MicroCycle.EXE_FLAGS);
 
         // WRITE BACK ENGINE
         if (type is not (TwoOperandType.CMP or TwoOperandType.BIT))
         {
             decoded.MicroCycles.Add(
-                ((ir >> 3) & 0x7) == 0 ? MicroCycle.WRITE_BACK_REG : MicroCycle.WRITE_BACK_RAM
+                ((ir >> 3) & 0x7) == 0 ? MicroCycle.WRITE_BACK_TWO : MicroCycle.WRITE_BACK_RAM
             );
         }
         
@@ -52,8 +59,8 @@ public partial class DecoderMux
     [
         AluOperation.NONE,
         AluOperation.PASS, AluOperation.SUB, 
-        AluOperation.AND, AluOperation.NAND, 
-        AluOperation.OR, AluOperation.ADD,
+        AluOperation.BIT, AluOperation.BIC, 
+        AluOperation.BIS, AluOperation.ADD,
         AluOperation.SUB,
     ];
 }

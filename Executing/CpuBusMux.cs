@@ -8,8 +8,10 @@ public partial class DataPath
     {
         if(signals.CpuBusDriver is Register.NONE)
             return;
+
+        ushort value = Access(signals.CpuBusDriver).Get();
         
-        cpuBus.Set((ushort)(Access(signals.CpuBusDriver).Get() & 0xFFFF));
+        cpuBus.Set((ushort)(!signals.UseByteMode ? value : value & 0x00FF));
     }
     
     public void CpuBusLatch(TriStateBus cpuBus, TriStateBus aluBus)
@@ -20,6 +22,15 @@ public partial class DataPath
         if (signals.AluAction is not null)
             cpuBus = aluBus;
 
-        Access(signals.CpuBusLatcher).Set(cpuBus.Get());
+        if (!signals.UseByteMode)
+        {
+            Access(signals.CpuBusLatcher).Set(cpuBus.Get());
+        }
+        else
+        {
+            ushort ffzz = (ushort)(Access(signals.CpuBusLatcher).Get() & 0xFF00);
+            
+            Access(signals.CpuBusLatcher).Set((ushort)(ffzz | cpuBus.Get()));
+        }
     }
 }

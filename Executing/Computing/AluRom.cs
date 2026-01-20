@@ -2,18 +2,29 @@ namespace pdp11_emulator.Executing.Computing;
 
 public partial class AluRom
 {
+    protected static ushort xFFFF;
+    protected static ushort x8000;
+    protected static uint x10000;
+    
+    protected static void SetMasks(bool byteMode)
+    {
+        xFFFF = (ushort)(!byteMode ? 0xFFFF : 0xFF);
+        x8000 = (ushort)(!byteMode ? 0x8000 : 0x80);
+        x10000 = (uint)(!byteMode ? 0x10000 : 0x100);
+    }
+    
     protected static readonly Func<AluInput, AluOutput>[] Operations =
     [
-        NONE, PASS ,SUB, AND, NAND, OR, ADD, // DOUBLE OPERANDS
-        ZERO, NOT, INC, DEC, NEG, ADC, SBC, // SINGLE OPERANDS
+        NONE, PASS ,SUB, BIT, BIC, BIS, ADD, // DOUBLE OPERANDS
+        ZERO, COM, INC, DEC, NEG, ADC, SBC, // SINGLE OPERANDS
         ASR, ASL, ROR, ROL, SWAB, // BITWISE OPERATIONS
     ];
 }
 
 public enum AluOperation
 {
-    NONE, PASS ,SUB, AND, NAND, OR, ADD, // DOUBLE OPERANDS
-    ZERO, NOT, INC, DEC, NEG, ADC, SBC, // SINGLE OPERANDS
+    NONE, PASS ,SUB, BIT, BIC, BIS, ADD, // DOUBLE OPERANDS
+    ZERO, COM, INC, DEC, NEG, ADC, SBC, // SINGLE OPERANDS
     ASR, ASL, ROR, ROL, SWAB, // BITWISE OPERATIONS
 };
 
@@ -23,6 +34,7 @@ public struct AluInput
     public ushort A;
     public ushort B;
     public bool C;
+    public bool ByteMode;
 }
 
 public struct AluOutput

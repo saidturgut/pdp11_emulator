@@ -10,6 +10,9 @@ public struct Decoded()
     public AluOperation AluOperation = AluOperation.NONE;
     public AluFlag FlagMask = AluFlag.None;
     
+    public bool ByteMode = false;
+    
     public readonly List<MicroCycle> MicroCycles 
-        = [MicroCycle.FETCH_MAR, MicroCycle.PC_INC, MicroCycle.FETCH_MDR, MicroCycle.DECODE];
+        = [MicroCycle.FETCH_READ, MicroCycle.PC_INC
+            , MicroCycle.FETCH_LATCH, MicroCycle.DECODE];
 }

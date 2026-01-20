@@ -28,15 +28,13 @@ public partial class DataPath
     {
         if(signals.UniBusDriving is UniBusDriving.NONE)
             return;
-
-        UniBusDriving masked = signals.UniBusDriving;
         
         uniBus.Request(new Request
         {
             Requester = (byte)requesterType,
             Address = Access(Register.MAR).Get(),
             Data = Access(Register.TMP).Get(),
-            Operation = masked,
+            Operation = signals.UniBusDriving,
         });
     }
 }
