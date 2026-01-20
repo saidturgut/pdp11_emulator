@@ -1,2 +1,7 @@
-.org 0
-MOVB -(r2),r4+
+        .text
+        .org    00000
+
+        SEN       
+LOOP:
+        BMI     LOOP
+        HALT

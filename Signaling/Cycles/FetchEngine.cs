@@ -16,8 +16,7 @@ public partial class ControlUnitRom
     private static SignalSet PC_INC() => new()
     {
         CpuBusDriver = Register.R7,
-        AluAction = new AluAction(AluOperation.ADD, 
-            Register.NONE, 2, AluFlag.None),
+        AluAction = new AluAction(Operation.ADD, Register.NONE, 2),
         CpuBusLatcher = Register.R7,
     };
 

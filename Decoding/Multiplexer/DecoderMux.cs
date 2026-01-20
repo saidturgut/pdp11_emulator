@@ -1,3 +1,5 @@
+using pdp11_emulator.Executing.Computing;
+
 namespace pdp11_emulator.Decoding.Multiplexer;
 using Signaling.Cycles;
 using Signaling;
@@ -8,29 +10,47 @@ public partial class DecoderMux : DecoderRom
     protected byte zfzz;
     protected byte zzfz;
     protected byte zzzf;
-    
+
     protected Decoded ZERO_OPERAND(MicroCycle microCycle)
     {
         Decoded decoded = new();
         decoded.MicroCycles.Add(microCycle);
         return decoded;
     }
-    
-    protected Decoded BRANCH(ushort opcode)
+
+    protected Decoded PSW(ushort ir)
     {
-        Decoded decoded = new();
+        ushort maskBits = (ushort)(ir & 0xF);
+        
+        PswFlag mask = PswFlag.None;
+
+        if ((maskBits & 0x8) != 0) mask |= PswFlag.Negative;
+        if ((maskBits & 0x4) != 0) mask |= PswFlag.Zero;
+        if ((maskBits & 0x2) != 0) mask |= PswFlag.Overflow;
+        if ((maskBits & 0x1) != 0) mask |= PswFlag.Carry;
+
+        Decoded decoded = new()
+        {
+            CycleLatch = (ushort)((ir & 0x00F0) == 0x00B0 ? 0xFFFF : 0x0000),
+            FlagMask = mask,
+        };
+
+        decoded.MicroCycles.Add(MicroCycle.EXECUTE_PSW);
+
         return decoded;
     }
-    
-    protected Decoded JSR(ushort opcode)
+
+    protected Decoded BRANCH(ushort ir)
     {
-        Decoded decoded = new();
-        return decoded;
-    }
-    
-    protected Decoded RTS(ushort opcode)
-    {
-        Decoded decoded = new();
+        Decoded decoded = new()
+        {
+            CycleLatch = (ushort)(ir & 0xFF), 
+                                                    // 0x80..0x87 or 0x1..0x7 
+            Condition = (Condition)((ir >> 8) > 7 ? (ir >> 8) - 121 : ir >> 8),
+        };
+        
+        decoded.MicroCycles.Add(MicroCycle.COMMIT_BRANCH);
+        
         return decoded;
     }
 }

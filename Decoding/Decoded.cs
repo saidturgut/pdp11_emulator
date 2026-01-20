@@ -7,10 +7,13 @@ public struct Decoded()
 {
     public Register[] Drivers = new Register[2];
 
-    public AluOperation AluOperation = AluOperation.NONE;
-    public AluFlag FlagMask = AluFlag.None;
+    public Condition Condition = Condition.NONE;
+    public Operation Operation = Operation.NONE;
     
-    public bool ByteMode = false;
+    public PswFlag FlagMask = PswFlag.None;
+    
+    public CycleMode CycleMode = CycleMode.NONE;
+    public ushort CycleLatch = 0;
     
     public readonly List<MicroCycle> MicroCycles 
         = [MicroCycle.FETCH_READ, MicroCycle.PC_INC

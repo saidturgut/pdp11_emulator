@@ -1,7 +1,7 @@
 namespace pdp11_emulator.Signaling.Cycles;
 using Executing.Computing;
 
-// EFFECTIVE ADDRESS CYCLES
+// ADDRESS CYCLES
 public partial class ControlUnitRom
 {
     private static readonly Register[] EaLatchers 
@@ -11,7 +11,7 @@ public partial class ControlUnitRom
     {
         CpuBusDriver = decoded.Drivers[registersIndex],
         CpuBusLatcher = EaLatchers[registersIndex],
-        UseByteMode = decoded.ByteMode,
+        CycleMode = decoded.CycleMode,
     };// EXIT
     
     private static SignalSet EA_READ_MODDED() => new()
@@ -31,15 +31,13 @@ public partial class ControlUnitRom
     private static SignalSet EA_INC() => new()
     {
         CpuBusDriver = decoded.Drivers[registersIndex],
-        AluAction = new AluAction(AluOperation.ADD,
-            Register.NONE, GetStepSize(), AluFlag.None),
+        AluAction = new AluAction(Operation.ADD, Register.NONE, GetStepSize()),
         CpuBusLatcher = decoded.Drivers[registersIndex],
     };
     private static SignalSet EA_DEC() => new()
     {
         CpuBusDriver = decoded.Drivers[registersIndex],
-        AluAction = new AluAction(AluOperation.SUB,
-            Register.NONE, GetStepSize(), AluFlag.None),
+        AluAction = new AluAction(Operation.SUB, Register.NONE, GetStepSize()),
         CpuBusLatcher = decoded.Drivers[registersIndex],
     };
     
@@ -53,8 +51,7 @@ public partial class ControlUnitRom
     {
         UniBusLatching = true,
         CpuBusDriver = Register.MDR,
-        AluAction = new AluAction(AluOperation.ADD, 
-            decoded.Drivers[registersIndex], 0, AluFlag.None),
+        AluAction = new AluAction(Operation.ADD, decoded.Drivers[registersIndex], 0),
         CpuBusLatcher = Register.MAR,
         UniBusDriving = UniBusDriving.READ_WORD,
     };
@@ -62,8 +59,7 @@ public partial class ControlUnitRom
     {
         UniBusLatching = true,
         CpuBusDriver = Register.MDR,
-        AluAction = new AluAction(AluOperation.ADD, 
-            decoded.Drivers[registersIndex], 0, AluFlag.None),
+        AluAction = new AluAction(Operation.ADD, decoded.Drivers[registersIndex], 0),
         CpuBusLatcher = Register.MAR,
         UniBusDriving = GetReadMode(),
     };
@@ -81,7 +77,7 @@ public partial class ControlUnitRom
         UniBusLatching = true,
         CpuBusDriver = Register.MDR,
         CpuBusLatcher = EaLatchers[registersIndex],
-        UseByteMode = decoded.ByteMode,
+        CycleMode = decoded.CycleMode,
     };// EXIT
 
     private static SignalSet EA_TOGGLE() => new();

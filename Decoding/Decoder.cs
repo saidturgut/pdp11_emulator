@@ -1,6 +1,5 @@
-using pdp11_emulator.Signaling.Cycles;
-
 namespace pdp11_emulator.Decoding;
+using Signaling.Cycles;
 using Multiplexer;
 
 public class Decoder : DecoderMux
@@ -20,9 +19,15 @@ public class Decoder : DecoderMux
         if (fzzz is (>= 1 and <= 6) or (>= 9 and <= 0xE))
             return TWO_OPERAND(ir);
         
-        if (fzzz is 0 or 8 && 
-            zfzz is >= 0xA and <= 0xC)
+        if ((fzzz is 0 or 8 && zfzz is >= 0xA and <= 0xC) 
+            || ir >> 6 is 3 or 0x37)
             return ONE_OPERAND(ir);
+
+        if((ir & 0xFC00) == 0)
+            return PSW(ir);
+
+        if (((fzzz == 0 && zfzz >= 1) || fzzz == 8) && zfzz <= 7)
+            return BRANCH(ir);
         
         throw new Exception($"ILLEGAL OPCODE ON ROW {fzzz}, COLUMN  {zfzz}");
     }

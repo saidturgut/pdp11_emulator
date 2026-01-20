@@ -9,13 +9,13 @@ public class DecoderRom
         MicroCycle.FETCH_READ, MicroCycle.PC_INC, MicroCycle.FETCH_LATCH, MicroCycle.DECODE,
     ];
 
-    protected readonly MicroCycle[][] EaEngine =
+    protected readonly MicroCycle[][] AddressEngine =
     [
         // 0 |  R
         [MicroCycle.EA_REG_LATCH],
         
         // 1 |  @R or (R)
-        [MicroCycle.EA_READ_MODDED,MicroCycle.EA_UNI_LATCH],
+        [MicroCycle.EA_READ_MODDED ,MicroCycle.EA_UNI_LATCH],
         
         // 2 |  (R)+ 
         [MicroCycle.EA_READ_MODDED, MicroCycle.EA_UNI_LATCH, MicroCycle.EA_INC],
@@ -33,15 +33,20 @@ public class DecoderRom
         [MicroCycle.EA_INDEX_ADDR, MicroCycle.EA_INDEX_WORD, MicroCycle.EA_DEFERRED, MicroCycle.EA_UNI_LATCH, MicroCycle.PC_INC],
     ];
 
-    protected readonly Dictionary<FlagMask, AluFlag> FlagMasks = new()
+}
+
+public static class FlagMasks
+{
+    public static readonly Dictionary<FlagMask, PswFlag> Table = new()
     {
-        { FlagMask.NZOC, AluFlag.Negative | AluFlag.Zero | AluFlag.Overflow | AluFlag.Carry },
-        { FlagMask.NZO, AluFlag.Negative | AluFlag.Zero | AluFlag.Overflow },
-        { FlagMask.NZ, AluFlag.Negative | AluFlag.Zero },
+        { FlagMask.NZOC, PswFlag.Negative | PswFlag.Zero | PswFlag.Overflow | PswFlag.Carry },
+        { FlagMask.NZO, PswFlag.Negative | PswFlag.Zero | PswFlag.Overflow },
+        { FlagMask.NZ, PswFlag.Negative | PswFlag.Zero },
+        { FlagMask.Z, PswFlag.Zero },
     };
-    
-    protected enum FlagMask
-    {
-        NZOC, NZO, NZ,
-    }
+}
+
+public enum FlagMask
+{
+    NZOC, NZO, NZ, Z,
 }

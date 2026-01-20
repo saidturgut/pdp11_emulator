@@ -9,6 +9,8 @@ public partial class DataPath
     
     public void AluAction(TriStateBus cpuBus, TriStateBus aluBus)
     {
+        Cw.SetFlags(Access(Register.PSW).Get());
+        
         if(signals.AluAction is null)
             return;
         
@@ -16,7 +18,7 @@ public partial class DataPath
         
         AluOutput output = Alu.Compute(new AluInput
         {
-            Operation = action.AluOperation,
+            Operation = action.Operation,
             
             A = InputMask(cpuBus.Get()),
             
@@ -24,18 +26,16 @@ public partial class DataPath
                 ? Access(action.RegisterOperand).Get() 
                 : action.StepSize),
             
-            C = (Access(Register.PSW).Get() & (ushort)AluFlag.Carry) != 0,
+            ByteMode = signals.CycleMode == CycleMode.BYTE_MODE,
             
-            ByteMode = signals.UseByteMode,
+            Cw = Cw,
         });
 
         aluBus.Set(output.Result);
-
-        Access(Register.PSW).Set((ushort)
-            ((Access(Register.PSW).Get() & (ushort)~action.FlagMask)
-             | (output.Flags & (ushort)action.FlagMask)));
+        
+        CommitFlags(output.Flags, signals.FlagMask);
     }
 
     private ushort InputMask(ushort target)
-        => !signals.UseByteMode ? target : (byte)(target & 0x00FF);
+        => signals.CycleMode != CycleMode.BYTE_MODE ? target : (byte)(target & 0x00FF);
 }

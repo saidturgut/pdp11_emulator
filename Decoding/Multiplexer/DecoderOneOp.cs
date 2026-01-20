@@ -7,46 +7,50 @@ public partial class DecoderMux
 {
     protected Decoded ONE_OPERAND(ushort ir)
     {
+        // ASSIGN ESSENTIALS
         Decoded decoded = new()
         {
             Drivers = [(Register)(ir & 0x7)],
             
-            AluOperation = (ir >> 6) switch
+            Operation = ((ir >> 6) & 0x3F)  switch
             {
-                0x30 => AluOperation.ROR,
-                0x31 => AluOperation.ROL,
-                0x32 => AluOperation.ASR,
-                0x33 => AluOperation.ASL,
+                0x3 => Operation.SWAB,
+                0x30 => Operation.ROR,
+                0x31 => Operation.ROL,
+                0x32 => Operation.ASR,
+                0x33 => Operation.ASL,
+                0x37 => Operation.SXT,
                 _ => SingleOperandTable[(ir >> 6) & 0x7],
             },
         };
-        
-        Console.WriteLine("OPERATION  " + decoded.AluOperation);
+        if (ir >> 15 != 0)
+            decoded.CycleMode = CycleMode.BYTE_MODE;
         
         // FLAG MASK
-        decoded.FlagMask = decoded.AluOperation switch
+        decoded.FlagMask = decoded.Operation switch
         {
-            AluOperation.INC or AluOperation.DEC => FlagMasks[FlagMask.NZO],
-            AluOperation.PASS or AluOperation.SWAB => FlagMasks[FlagMask.NZ],
-            _ => FlagMasks[FlagMask.NZOC]
+            Operation.INC or Operation.DEC => FlagMasks.Table[FlagMask.NZO],
+            Operation.PASS or Operation.SWAB => FlagMasks.Table[FlagMask.NZ],
+            Operation.SXT => FlagMasks.Table[FlagMask.Z],
+            _ => FlagMasks.Table[FlagMask.NZOC]
         };
         
         // EA AND EXE ENGINES
-        decoded.MicroCycles.AddRange(EaEngine[(ir >> 3) & 0x7]);
-        decoded.MicroCycles.Add(MicroCycle.EXE_LATCH);
+        decoded.MicroCycles.AddRange(AddressEngine[(ir >> 3) & 0x7]);
+        decoded.MicroCycles.Add(MicroCycle.EXECUTE_LATCH);
 
-        // WRITE BACK ENGINE
-        if (decoded.AluOperation is not AluOperation.PASS)
+        // COMMIT ENGINE
+        if (decoded.Operation is not Operation.PASS)
             decoded.MicroCycles.Add(
-                ((ir >> 3) & 0x7) == 0 ? MicroCycle.WRITE_BACK_ONE : MicroCycle.WRITE_BACK_RAM);
+                ((ir >> 3) & 0x7) == 0 ? MicroCycle.COMMIT_ONE : MicroCycle.COMMIT_RAM);
         
         return decoded;
     }
 
-    private readonly AluOperation[] SingleOperandTable =
+    private readonly Operation[] SingleOperandTable =
     [
-        AluOperation.ZERO, AluOperation.COM, AluOperation.INC, AluOperation.DEC,
-        AluOperation.NEG, AluOperation.ADC, AluOperation.SBC, AluOperation.PASS,
-        AluOperation.ASR, AluOperation.ASL, AluOperation.ROR, AluOperation.ROL, AluOperation.SWAB,
+        Operation.ZERO, Operation.COM, Operation.INC, Operation.DEC,
+        Operation.NEG, Operation.ADC, Operation.SBC, Operation.PASS,
+        Operation.ASR, Operation.ASL, Operation.ROR, Operation.ROL, Operation.SWAB, Operation.SXT,
     ];
 }

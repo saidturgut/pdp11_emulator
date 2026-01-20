@@ -23,26 +23,27 @@ public partial class DecoderMux
         Decoded decoded = new()
         {
             Drivers = [(Register)((ir >> 6)  & 0x7), (Register)(ir & 0x7)],
-            AluOperation = TwoOperandTable[(ushort)type],
-            FlagMask = FlagMasks[type == TwoOperandType.MOV ? FlagMask.NZO : FlagMask.NZOC],
-            ByteMode = byteMode,
+            Operation = TwoOperandTable[(ushort)type],
+            FlagMask = FlagMasks.Table[type == TwoOperandType.MOV ? FlagMask.NZO : FlagMask.NZOC],
         };
+        if (byteMode)
+            decoded.CycleMode = CycleMode.BYTE_MODE;
         
         // EFFECTIVE ADDRESS ENGINE
-        decoded.MicroCycles.AddRange(EaEngine[(ir >> 9) & 0x7]);
+        decoded.MicroCycles.AddRange(AddressEngine[(ir >> 9) & 0x7]);
         decoded.MicroCycles.Add(MicroCycle.EA_TOGGLE);
-        decoded.MicroCycles.AddRange(EaEngine[(ir >> 3) & 0x7]);
+        decoded.MicroCycles.AddRange(AddressEngine[(ir >> 3) & 0x7]);
         decoded.MicroCycles.Add(MicroCycle.EA_TOGGLE);
 
         // EXECUTE ENGINE
         decoded.MicroCycles.Add(type is not (TwoOperandType.MOV or TwoOperandType.CMP or TwoOperandType.BIT)
-            ? MicroCycle.EXE_LATCH : MicroCycle.EXE_FLAGS);
+            ? MicroCycle.EXECUTE_LATCH : MicroCycle.EXECUTE_FLAGS);
 
         // WRITE BACK ENGINE
         if (type is not (TwoOperandType.CMP or TwoOperandType.BIT))
         {
             decoded.MicroCycles.Add(
-                ((ir >> 3) & 0x7) == 0 ? MicroCycle.WRITE_BACK_TWO : MicroCycle.WRITE_BACK_RAM
+                ((ir >> 3) & 0x7) == 0 ? MicroCycle.COMMIT_TWO : MicroCycle.COMMIT_RAM
             );
         }
         
@@ -55,12 +56,12 @@ public partial class DecoderMux
         ADD = 0x6, SUB = 0x7,
     }
 
-    public AluOperation[] TwoOperandTable =
+    public Operation[] TwoOperandTable =
     [
-        AluOperation.NONE,
-        AluOperation.PASS, AluOperation.SUB, 
-        AluOperation.BIT, AluOperation.BIC, 
-        AluOperation.BIS, AluOperation.ADD,
-        AluOperation.SUB,
+        Operation.NONE,
+        Operation.PASS, Operation.SUB, 
+        Operation.BIT, Operation.BIC, 
+        Operation.BIS, Operation.ADD,
+        Operation.SUB,
     ];
 }

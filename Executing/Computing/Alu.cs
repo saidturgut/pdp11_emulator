@@ -1,4 +1,5 @@
 namespace pdp11_emulator.Executing.Computing;
+using Components;
 using Signaling;
 
 public class Alu : AluRom
@@ -9,10 +10,13 @@ public class Alu : AluRom
         
         AluOutput output = Operations[(ushort)input.Operation](input);
         
-        if((output.Result & x8000) != 0) 
-            output.Flags |= (ushort)AluFlag.Negative;
-        if(output.Result == 0) 
-            output.Flags |= (ushort)AluFlag.Zero;
+        // COMPUTE N AND Z FLAGS
+        ushort result = (ushort)(!maskApplied 
+            ? output.Result : output.Result & 0xFF);
+        if((result & x8000) != 0) 
+            output.Flags |= (ushort)PswFlag.Negative;
+        if(result == 0) 
+            output.Flags |= (ushort)PswFlag.Zero;
 
         if (input.ByteMode)
             output.Result &= 0xFF;

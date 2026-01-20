@@ -26,5 +26,9 @@ public static class Assembler
         if (proc.ExitCode != 0)
             throw new Exception($"Build failed:\n{stderr}");
 
+        
+        // clv 10100010
+        // clc 10100001
+        // sec 10110001
     } 
 }

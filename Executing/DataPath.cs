@@ -32,7 +32,7 @@ public partial class DataPath
     
     public void Init()
     {
-        Access(Register.R0).Set(0x010);
+        Access(Register.R0).Set(0x10);
         Access(Register.R1).Set(0x100);
         Access(Register.R2).Set(0x200);
         Access(Register.R3).Set(0x300);

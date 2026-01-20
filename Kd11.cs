@@ -28,6 +28,7 @@ public class Kd11
         if(DataPath.STALL) return;
         DataPath.CpuBusDrive(CpuBus);
         DataPath.AluAction(CpuBus, AluBus);
+        DataPath.PswAction();
         DataPath.CpuBusLatch(CpuBus, AluBus);
         DataPath.UniBusDrive(uniBus);
 

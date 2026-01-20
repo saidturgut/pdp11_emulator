@@ -19,7 +19,7 @@ public partial class AluRom
             { Result = (ushort)((input.A + 1) & xFFFF) };
 
         if (input.A == x8000 - 1)
-            output.Flags |= (ushort)AluFlag.Overflow;
+            output.Flags |= (ushort)PswFlag.Overflow;
         
         return output;
     }
@@ -29,7 +29,7 @@ public partial class AluRom
             { Result = (ushort)((input.A - 1) & xFFFF) };
 
         if (input.A == x8000)
-            output.Flags |= (ushort)AluFlag.Overflow;
+            output.Flags |= (ushort)PswFlag.Overflow;
         
         return output;
     }
@@ -39,30 +39,33 @@ public partial class AluRom
             { Result = (ushort)(-input.A & xFFFF) };
 
         if ((input.A & xFFFF) != 0)
-            output.Flags |= (ushort)AluFlag.Carry;
+            output.Flags |= (ushort)PswFlag.Carry;
 
         if ((input.A & xFFFF) == x8000)
-            output.Flags |= (ushort)AluFlag.Overflow;
+            output.Flags |= (ushort)PswFlag.Overflow;
         
         return output;
     }
 
     private static AluOutput ADC(AluInput input)
     {
-        AluOutput output = input.C ? INC(input) : PASS(input);
+        AluOutput output = input.Cw.Carry ? INC(input) : PASS(input);
         
-        if(input.C && input.A == 0)
-            output.Flags |= (ushort)AluFlag.Carry;
+        if(input.Cw.Carry && input.A == 0)
+            output.Flags |= (ushort)PswFlag.Carry;
         
         return output;
     }
     private static AluOutput SBC(AluInput input)
     {
-        AluOutput output = input.C ? DEC(input) : PASS(input);
+        AluOutput output = input.Cw.Carry ? DEC(input) : PASS(input);
         
-        if (!input.C || input.A != 0)
-            output.Flags |= (ushort)AluFlag.Carry;
+        if (!input.Cw.Carry || input.A != 0)
+            output.Flags |= (ushort)PswFlag.Carry;
         
         return output;
     }
+
+    private static AluOutput BRANCH(AluInput input) => new()
+        { Result = (ushort)(input.A + (sbyte)input.B) };
 }
