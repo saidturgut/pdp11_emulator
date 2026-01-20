@@ -40,7 +40,7 @@ public partial class DataPath
         Access(Register.R5).Set(0x500);
         Access(Register.R6).Set(0x1000);
         //Access(Register.R7).Set(0x2000);
-        //Access(RegisterAction.PSW).Set(0xFFFF);
+        //Access(Register.PSW).Set(0xFFFF);
     }
 
     public void Clear(TriStateBus cpuBus, TriStateBus aluBus)

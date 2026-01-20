@@ -7,12 +7,12 @@ public partial class ControlUnitRom
     private static readonly Register[] EaLatchers 
         = [Register.TMP, Register.DST];
     
-    private static SignalSet EA_REG_DATA_LATCH() => new()
+    private static SignalSet EA_REG_DATA() => new()
     {
         CpuBusDriver = decoded.Drivers[registersIndex],
         CpuBusLatcher = EaLatchers[registersIndex],
     };// EXIT
-    private static SignalSet EA_REG_ADDR_LATCH() => new()
+    private static SignalSet EA_REG_ADDR() => new()
     {
         CpuBusDriver = decoded.Drivers[registersIndex],
         CpuBusLatcher = Register.MAR,
@@ -34,13 +34,13 @@ public partial class ControlUnitRom
         CpuBusLatcher = decoded.Drivers[registersIndex],
     };
     
-    private static SignalSet EA_INDEX_MAR() => new()
+    private static SignalSet EA_INDEX_ADDR() => new()
     {
         CpuBusDriver = Register.R7,
         CpuBusLatcher = Register.MAR,
         UniBusDriving = UniBusDriving.READ_WORD,
     };
-    private static SignalSet EA_INDEX_MDR() => new()
+    private static SignalSet EA_INDEX_DATA() => new()
     {
         UniBusLatching = true,
         CpuBusDriver = Register.MDR,
@@ -50,7 +50,7 @@ public partial class ControlUnitRom
         UniBusDriving = UniBusDriving.READ_WORD,
     };
     
-    private static SignalSet EA_UNI_ADDR_LATCH() => new()
+    private static SignalSet EA_UNI_ADDR() => new()
     {
         UniBusLatching = true,
         CpuBusDriver = Register.MDR,
@@ -58,7 +58,7 @@ public partial class ControlUnitRom
         UniBusDriving = UniBusDriving.READ_WORD,
     };
     
-    private static SignalSet EA_UNI_DATA_LATCH() => new()
+    private static SignalSet EA_UNI_DATA() => new()
     {
         UniBusLatching = true,
         CpuBusDriver = Register.MDR,

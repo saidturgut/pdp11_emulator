@@ -4,19 +4,11 @@ using Signaling;
 
 public partial class DecoderMux : DecoderRom
 {
-    private byte fzzz;
-    private byte zfzz;
-    private byte zzfz;
-    private byte zzzf;
+    protected byte fzzz;
+    protected byte zfzz;
+    protected byte zzfz;
+    protected byte zzzf;
     
-    protected void SetNibbles(ushort ir)
-    {
-        fzzz = (byte)(ir >> 12);
-        zfzz = (byte)((ir & 0xF00) >> 8);
-        zzfz = (byte)((ir & 0xF0) >> 4);
-        zzzf = (byte)(ir & 0xF);
-    }
-
     protected Decoded ZERO_OPERAND(MicroCycle microCycle)
     {
         Decoded decoded = new();
