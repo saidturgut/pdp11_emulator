@@ -1,10 +1,12 @@
 namespace pdp11_emulator;
 using Executing.Components;
+using Signaling;
 
 public class Pdp11
 {
     private readonly UniBus UniBus = new ();
-    
+    private readonly TrapUnit TrapUnit = new();
+
     // REQUESTERS
     private readonly Kd11 Kd11 = new ();
     
@@ -35,12 +37,12 @@ public class Pdp11
         UniBus.Clear();
         
         // REQUESTERS
-        Kd11.Tick(UniBus);
+        Kd11.Tick(UniBus, TrapUnit);
         
         UniBus.Arbitrate();
 
         // RESPONDERS
-        Ram.Respond(UniBus);
+        Ram.Respond(UniBus, TrapUnit);
         
         HALT = Kd11.HALT;
         

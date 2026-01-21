@@ -13,7 +13,7 @@ public partial class DataPath
     {
         if (signals.PswAction is not null)
         {
-            CommitFlags(signals.PswAction.Value.Buffer, signals.FlagMask);
+            SetFlags(signals.PswAction.Value.Buffer, signals.FlagMask);
         }
     }
 
@@ -39,11 +39,10 @@ public partial class DataPath
         
         Condition.SOB => !zeroLatch,
         
-        Condition.NONE => throw new Exception("MISSING CONDITION!!"),
         _ => throw new Exception("INVALID CONDITION!!")
     };
 
-    private void CommitFlags(ushort flags, PswFlag mask)
+    private void SetFlags(ushort flags, PswFlag mask)
         => Access(Register.PSW).Set((ushort)
             ((Access(Register.PSW).Get() & (ushort)~mask) | (flags & (ushort)mask)));
 }

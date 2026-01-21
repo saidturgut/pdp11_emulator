@@ -17,9 +17,6 @@ public partial class ControlUnitRom
         UniBusDriving = decoded.UniBusMode,
     };
     
-    private static SignalSet TMP_TO_MAR() => new()
-        { UniBusDriving = GetWriteMode(), };
-    
     private static SignalSet PC_TO_REG() => new()
     {
         CpuBusDriver = Register.PC,

@@ -1,17 +1,17 @@
 namespace pdp11_emulator.Decoding;
 using Signaling.Cycles;
+using Signaling;
 using Multiplexer;
 
 public class Decoder : DecoderMux
 {
-
     private readonly Dictionary<ushort, MicroCycle> FixedOpcodes = new()
     {
         {0x00, MicroCycle.HALT}, // HALT
         {0xA0, MicroCycle.EMPTY} // NOP
     };
     
-    public Decoded Decode(ushort ir)
+    public Decoded Decode(ushort ir, TrapUnit trapUnit)
     {
         SetNibbles(ir);
         
@@ -43,7 +43,8 @@ public class Decoder : DecoderMux
         if((ir & 0xFC00) == 0)
             return PSW(ir);
         
-        throw new Exception($"ILLEGAL OPCODE ON ROW {fzzz}, COLUMN  {zfzz}");
+        trapUnit.Request(TrapVector.ILLEGAL_INSTRUCTION, true);
+        return new Decoded();
     }
     
     private void SetNibbles(ushort ir)

@@ -2,53 +2,50 @@ namespace pdp11_emulator.Signaling;
 using Decoding;
 using Cycles;
 
-public class ControlUnit : ControlUnitRom
+// SEQUENCER, TRAP UNIT
+public partial class ControlUnit : ControlUnitRom
 {
     private readonly Decoder Decoder = new();
     
     private ushort currentCycle;
-    
-    private bool INTERRUPT;
-    private bool TRAP;
+
+    public bool BOUNDARY;
     
     public bool HALT;
 
-    public SignalSet Emit(ushort ir)
+    public SignalSet Emit(ushort ir, TrapUnit trapUnit)
     {
+        BOUNDARY = false;
+
+        if (trapUnit.TRAP && currentCycle == 0)
+            decoded = Trap(trapUnit);
+        
         Console.WriteLine("CURRENT CYCLE : " +  decoded.MicroCycles[currentCycle]);
         
-        if (INTERRUPT)
-            return new SignalSet();
-
         if (decoded.MicroCycles[currentCycle] is MicroCycle.DECODE)
         {
-            decoded = Decoder.Decode(ir);
+            decoded = Decoder.Decode(ir, trapUnit);
             return new SignalSet();
         }
 
         return MicroCycles[(int)decoded.MicroCycles[currentCycle]]();
     }
-    
-    public void Advance()
+
+    private Decoded Trap(TrapUnit trapUnit)
     {
-        if (decoded.MicroCycles[currentCycle] is MicroCycle.HALT)
+        Decoded decoded = new Decoded()
         {
-            HALT = true;
-            return;
-        }
+            CycleLatch = trapUnit.VECTOR,
+        };
         
-        if (INTERRUPT)
-            return;
-        
-        if (decoded.MicroCycles[currentCycle] == MicroCycle.INDEX_TOGGLE)
-            registersIndex = (byte)(registersIndex == 0 ? 1 : 0);
-        
-        if (currentCycle == decoded.MicroCycles.Count - 1)
-        {
-            registersIndex = 0;
-            currentCycle = 0;
-        }
-        else
-            currentCycle++;
+        return decoded;
+    }
+    
+    public void Clear()
+    {
+        decoded = new Decoded();
+        registersIndex = 0;
+        currentCycle = 0;
+        BOUNDARY = false;
     }
 }

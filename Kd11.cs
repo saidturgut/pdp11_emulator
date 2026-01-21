@@ -18,16 +18,16 @@ public class Kd11
         DataPath.Init();
     }
     
-    public void Tick(UniBus uniBus)
+    public void Tick(UniBus uniBus, TrapUnit trapUnit)
     {
         DataPath.Clear(CpuBus, AluBus);
         DataPath.Receive(
-        ControlUnit.Emit(DataPath.GetIr()));
+        ControlUnit.Emit(DataPath.GetIr(), trapUnit));
         
         DataPath.UniBusLatch(uniBus);
         if(DataPath.STALL) return;
         DataPath.CpuBusDrive(CpuBus);
-        DataPath.AluAction(CpuBus, AluBus);
+        DataPath.AluAction(CpuBus, AluBus, trapUnit);
         DataPath.PswAction();
         DataPath.CpuBusLatch(CpuBus, AluBus);
         DataPath.UniBusDrive(uniBus);
@@ -37,5 +37,7 @@ public class Kd11
         ControlUnit.Advance();
 
         HALT = ControlUnit.HALT;
+
+        if (ControlUnit.BOUNDARY) DataPath.Commit(trapUnit.State());
     }
 }

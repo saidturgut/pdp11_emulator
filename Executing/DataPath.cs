@@ -32,17 +32,17 @@ public partial class DataPath
     
     public void Init()
     {
-        /*Access(Register.R0).Set(0x10);
-        Access(Register.R1).Set(0x100);
-        Access(Register.R2).Set(0x200);
-        Access(Register.R3).Set(0x300);
-        Access(Register.R4).Set(0x400);
-        Access(Register.R5).Set(0x500);*/
-        Access(Register.SP).Set(0x200);
-        //Access(Register.R7).Set(0x2000);
-        //Access(Register.PSW).Set(0xFFFF);
+        Access(Register.R0).Debug(0x10);
+        Access(Register.R1).Debug(0x100);
+        Access(Register.R2).Debug(0x200);
+        Access(Register.R3).Debug(0x300);
+        Access(Register.R4).Debug(0x400);
+        Access(Register.R5).Debug(0x500);
+        Access(Register.SP).Debug(0x200);
+        //Access(Register.R7).Debug(0x2000);
+        //Access(Register.PSW).Debug(0xFFFF);
     }
-
+    
     public void Clear(TriStateBus cpuBus, TriStateBus aluBus)
     {
         cpuBus.Clear();
@@ -57,6 +57,17 @@ public partial class DataPath
     
     public ushort GetIr() 
         => Registers[(ushort)Register.IR].Get();
+
+    public void Commit(bool abort)
+    {
+        foreach (RegisterObject register in Registers)
+        {
+            if (!abort)
+                register.Commit();
+            
+            register.Init();
+        }
+    }
     
     public void Debug()
     {

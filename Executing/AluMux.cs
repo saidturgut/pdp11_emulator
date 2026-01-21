@@ -7,7 +7,7 @@ public partial class DataPath
 {
     private readonly Alu Alu = new();
     
-    public void AluAction(TriStateBus cpuBus, TriStateBus aluBus)
+    public void AluAction(TriStateBus cpuBus, TriStateBus aluBus, TrapUnit trapUnit)
     {
         Cw.SetFlags(Access(Register.PSW).Get());
         
@@ -29,14 +29,14 @@ public partial class DataPath
             ByteMode = signals.CycleMode == CycleMode.BYTE_MODE,
             
             Cw = Cw,
-        });
+        }, trapUnit);
 
         aluBus.Set(output.Result);
         
         if(action.StepSize == 0) 
             zeroLatch = (output.Flags & (ushort)PswFlag.Zero) != 0;
         
-        CommitFlags(output.Flags, signals.FlagMask);
+        SetFlags(output.Flags, signals.FlagMask);
     }
 
     private ushort InputMask(ushort target)

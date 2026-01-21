@@ -48,14 +48,3 @@ public struct AluOutput
     public ushort Result;
     public ushort Flags;
 }
-
-[Flags]
-public enum PswFlag
-{
-    None = 0,
-    Trace = 1 << 11,
-    Negative = 1 << 12,
-    Zero = 1 << 13,
-    Overflow = 1 << 14,
-    Carry = 1 << 15,
-}

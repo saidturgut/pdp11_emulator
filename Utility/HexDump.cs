@@ -27,6 +27,6 @@ public static class HexDump
             Console.WriteLine("|");
         }
         
-        Environment.Exit(55);
+        Environment.Exit(08);
     }
 }

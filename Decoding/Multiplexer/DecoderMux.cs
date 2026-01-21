@@ -1,5 +1,5 @@
 namespace pdp11_emulator.Decoding.Multiplexer;
-using Executing.Computing;
+using Executing.Components;
 using Signaling.Cycles;
 using Signaling;
 

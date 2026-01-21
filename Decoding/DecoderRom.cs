@@ -1,6 +1,6 @@
 namespace pdp11_emulator.Decoding;
 using Signaling.Cycles;
-using Executing.Computing;
+using Executing.Components;
 
 public class DecoderRom
 {

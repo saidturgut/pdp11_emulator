@@ -1,5 +1,5 @@
 namespace pdp11_emulator.Signaling.Cycles;
-using Executing.Computing;
+using Executing.Components;
 
 // EXECUTE CYCLES
 public partial class ControlUnitRom

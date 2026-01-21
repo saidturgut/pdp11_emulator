@@ -47,7 +47,7 @@ public class Ram
             HexDump.Write(Memory);
     }
     
-    public void Respond(UniBus uniBus)
+    public void Respond(UniBus uniBus, TrapUnit trapUnit)
     {
         if(!uniBus.respondPermit)
             return;
@@ -55,11 +55,11 @@ public class Ram
         switch (uniBus.operation)
         {
             case UniBusDriving.READ_WORD:
-                uniBus.SetData(ReadWord(uniBus.GetAddress())); break;
+                uniBus.SetData(ReadWord(uniBus.GetAddress(), trapUnit)); break;
             case UniBusDriving.READ_BYTE:
                 uniBus.SetData(ReadByte(uniBus.GetAddress())); break;
             case UniBusDriving.WRITE_WORD:
-                WriteWord(uniBus.GetAddress(), uniBus.GetData()); break;
+                WriteWord(uniBus.GetAddress(), uniBus.GetData(), trapUnit); break;
             case UniBusDriving.WRITE_BYTE:
                 WriteByte(uniBus.GetAddress(), (byte)uniBus.GetData()); break;
             default:
@@ -67,21 +67,23 @@ public class Ram
         } 
     }
     
-    private ushort ReadWord(ushort address)
+    private ushort ReadWord(ushort address, TrapUnit trapUnit)
     {
         if (address % 2 != 0)
         {
-            throw new Exception("ODD ADDRESSES ARE ILLEGAL!!");
+            trapUnit.Request(TrapVector.ODD_ADDRESS, true);
+            return 0;
         }
         
         return (ushort)(Memory[address] | (Memory[address + 1] << 8));
     }
 
-    private void WriteWord(ushort address, ushort value)
+    private void WriteWord(ushort address, ushort value, TrapUnit trapUnit)
     {
         if (address % 2 != 0)
         {
-            throw new Exception("ODD ADDRESSES ARE ILLEGAL!!");
+            trapUnit.Request(TrapVector.ODD_ADDRESS, true);
+            return;
         }
 
         Memory[address] = (byte)(value & 0xFF);
