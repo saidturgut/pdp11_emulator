@@ -5,6 +5,7 @@ using Executing.Components;
 public partial class MicroUnitRom
 {
     private static SignalSet HALT() => new();
+    private static SignalSet WAIT() => new();
     
     private static SignalSet TMP_TO_REG() => new()
     {

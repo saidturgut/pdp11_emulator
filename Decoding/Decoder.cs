@@ -8,6 +8,7 @@ public class Decoder : DecoderMux
     private readonly Dictionary<ushort, MicroCycle> FixedOpcodes = new()
     {
         {0x00, MicroCycle.HALT}, // HALT
+        {0x01, MicroCycle.WAIT}, // WAIT
         {0xA0, MicroCycle.EMPTY} // NOP
     };
     
@@ -15,8 +16,11 @@ public class Decoder : DecoderMux
     {
         SetNibbles(ir);
         
-        if (ir == 0)
-            return ZERO_OPERAND(FixedOpcodes[ir]);
+        if (FixedOpcodes.TryGetValue(ir, out var cycle))
+            return ZERO_OPERAND(cycle);
+
+        if (ir is 3 or 4)
+            return TRAP(ir == 3 ? TrapVector.BPT : TrapVector.IOT, trapUnit);
         
         if (fzzz is (>= 1 and <= 6) or (>= 9 and <= 0xE))
             return TWO_OPERAND(ir);
@@ -24,18 +28,29 @@ public class Decoder : DecoderMux
         if ((fzzz is 0 or 8 && zfzz is >= 0xA and <= 0xC) 
             || ir >> 6 is 3 or 0x37)
             return ONE_OPERAND(ir);
+
+        switch (ir >> 8)
+        {
+            case 0x88 : return TRAP(TrapVector.EMT, trapUnit);
+            case 0x89 : return TRAP(TrapVector.TRAP, trapUnit);
+        }
         
-        if(ir >> 6 == 1)
-            return JMP(ir);
+        switch (ir >> 6)
+        {
+            case 0x1: return JMP(ir);
+        }
         
         switch (ir >> 9)
         {
             case 0x4: return JSR(ir);
             case 0x3F: return SOB(ir);
         }
-        
-        if (ir >> 3 == 0x10)
-            return RTS(ir);
+
+        switch (ir >> 3)
+        {
+            case 0x10: return RTS(ir);
+            case 0x13: return SPL(ir);
+        }
         
         if (((fzzz == 0 && zfzz >= 1) || fzzz == 8) && zfzz <= 7)
             return BRANCH(ir);
@@ -44,7 +59,7 @@ public class Decoder : DecoderMux
             return PSW(ir);
         
         // IF FALL THROUGH ->
-        trapUnit.Request(TrapVector.ILLEGAL_INSTRUCTION, true);
+        trapUnit.Request(TrapVector.ILLEGAL_INSTRUCTION);
         return new Decoded();
     }
     

@@ -6,10 +6,10 @@ public partial class MicroUnit
 {
     public void Advance(TrapUnit trapUnit)
     {
-        if (decoded.MicroCycles[currentCycle] is MicroCycle.HALT)
+        switch (decoded.MicroCycles[currentCycle])
         {
-            HALT = true;
-            return;
+            case MicroCycle.HALT: HALT = true; return;
+            case MicroCycle.WAIT: WAIT = true; break;
         }
         
         if (decoded.MicroCycles[currentCycle] == MicroCycle.INDEX_TOGGLE)

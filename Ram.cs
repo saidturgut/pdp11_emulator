@@ -2,6 +2,7 @@ namespace pdp11_emulator;
 using Executing.Components;
 using Signaling;
 using Utility;
+using Arbitrating;
 
 public class Ram
 {
@@ -14,34 +15,37 @@ public class Ram
         for (int i = 0; i < image.Length; i++)
             Memory[i + startAddress] = image[i];
 
-        Memory[0x10] = 0xAA;
-        Memory[0x11] = 0xAA;
-        
-        Memory[0x100] = 0x20;
-        Memory[0x101] = 0x22;
-        Memory[0x102] = 0x22;
-        Memory[0x103] = 0x22;
-        
-        Memory[0x1FE] = 0x34;
-        Memory[0x1FF] = 0x33;
+        /*Memory[0x20] = 0x20;
+        Memory[0x22] = 0x22;
 
-        Memory[0x300] = 0x44;
-        Memory[0x301] = 0x44;
+         Memory[0x10] = 0xAA;
+         Memory[0x11] = 0xAA;
 
-        Memory[0x404] = 0x55;
-        Memory[0x405] = 0x55;
-        
-        Memory[0x500] = 0x00;
-        Memory[0x501] = 0x06;
-        
-        Memory[0x600] = 0x78;
-        Memory[0x601] = 0x77;
+         Memory[0x100] = 0x20;
+         Memory[0x101] = 0x22;
+         Memory[0x102] = 0x22;
+         Memory[0x103] = 0x22;
 
-        Memory[0x2002] = 0x00;
-        Memory[0x2003] = 0x08;
-        
-        Memory[0x0800] = 0x96;
-        Memory[0x0801] = 0x99;
+         Memory[0x1FE] = 0x34;
+         Memory[0x1FF] = 0x33;
+
+         Memory[0x300] = 0x44;
+         Memory[0x301] = 0x44;
+
+         Memory[0x404] = 0x55;
+         Memory[0x405] = 0x55;
+
+         Memory[0x500] = 0x00;
+         Memory[0x501] = 0x06;
+
+         Memory[0x600] = 0x78;
+         Memory[0x601] = 0x77;
+
+         Memory[0x2002] = 0x00;
+         Memory[0x2003] = 0x08;
+
+         Memory[0x0800] = 0x96;
+         Memory[0x0801] = 0x99;*/
         
         if (hexDump)
             HexDump.Write(Memory);
@@ -52,7 +56,7 @@ public class Ram
         if(!uniBus.respondPermit)
             return;
         
-        switch (uniBus.operation)
+        switch (uniBus.Operation)
         {
             case UniBusDriving.READ_WORD:
                 uniBus.SetData(ReadWord(uniBus.GetAddress(), trapUnit)); break;
@@ -71,7 +75,7 @@ public class Ram
     {
         if (address % 2 != 0)
         {
-            trapUnit.Request(TrapVector.ODD_ADDRESS, true);
+            trapUnit.Request(TrapVector.ODD_ADDRESS);
             return 0;
         }
         
@@ -82,7 +86,7 @@ public class Ram
     {
         if (address % 2 != 0)
         {
-            trapUnit.Request(TrapVector.ODD_ADDRESS, true);
+            trapUnit.Request(TrapVector.ODD_ADDRESS);
             return;
         }
 

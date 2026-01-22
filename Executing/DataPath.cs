@@ -29,7 +29,7 @@ public partial class DataPath
     
     private SignalSet signals;
 
-    public bool STALL;
+    public bool STALL { get; private set; }
     
     public void Clear(TriStateBus cpuBus, TriStateBus aluBus)
     {
@@ -53,8 +53,7 @@ public partial class DataPath
     {
         foreach (RegisterObject register in Registers)
         {
-            if (!abort)
-                register.Commit();
+            if (!abort) register.Commit();
             
             register.Init();
         }

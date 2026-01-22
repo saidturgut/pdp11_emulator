@@ -1,9 +1,8 @@
-using System.Xml.Schema;
-
 namespace pdp11_emulator.Executing;
 using Signaling.Cycles;
 using Signaling;
 using Components;
+using Arbitrating;
 
 public partial class DataPath
 {
@@ -14,7 +13,7 @@ public partial class DataPath
         if(!signals.UniBusLatching)
             return;
         
-        if (uniBus.requesters[(ushort)requesterType] != null)
+        if (uniBus.DataRequests[(ushort)requesterType] != null)
         {
             STALL = true;
             return;
@@ -30,7 +29,7 @@ public partial class DataPath
         if(signals.UniBusDriving is UniBusDriving.NONE)
             return;
         
-        uniBus.Request(new Request
+        uniBus.RequestData(new DataRequest
         {
             Requester = (byte)requesterType,
             Address = Access(Register.MAR).Get(),

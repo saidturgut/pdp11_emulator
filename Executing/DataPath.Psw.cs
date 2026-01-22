@@ -8,11 +8,17 @@ public partial class DataPath
     private readonly ControlWord Cw = new ();
 
     private bool zeroLatch;
+
+    public byte GetPriorityLevel() => Cw.Priority;
     
-    public void PswAction()
+    public void PswAction(TrapUnit trapUnit)
     {
+        if (Cw.Trace) trapUnit.Request(TrapVector.TRACE);
+        
         if (signals.PswAction is not null)
         {
+            Environment.Exit(5);
+            
             SetFlags(signals.PswAction.Value.Buffer, signals.FlagMask);
         }
     }

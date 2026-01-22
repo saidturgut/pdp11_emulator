@@ -23,7 +23,7 @@ public partial class MicroUnitRom
         EMPTY,
         //FETCH ENGINE
         FETCH_READ, PC_INC, FETCH_LATCH,
-        DECODE, HALT,
+        DECODE, HALT, WAIT,
     
         // ADDRESS ENGINE
         REG_TO_TEMP, 
@@ -54,7 +54,7 @@ public enum MicroCycle
     EMPTY,
     //FETCH ENGINE
     FETCH_READ, PC_INC, FETCH_LATCH,
-    DECODE, HALT,
+    DECODE, HALT, WAIT,
     
     // ADDRESS ENGINE
     REG_TO_TEMP, 

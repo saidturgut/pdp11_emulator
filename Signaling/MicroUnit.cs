@@ -2,16 +2,17 @@ namespace pdp11_emulator.Signaling;
 using Decoding;
 using Cycles;
 
-// SEQUENCER
+// OWNS SEQUENCER
 public partial class MicroUnit : MicroUnitRom
 {
     private readonly Decoder Decoder = new();
     
     private ushort currentCycle;
 
-    public bool BOUNDARY;
+    public bool HALT { get; private set; }
+    public bool WAIT { get; private set; }
     
-    public bool HALT;
+    public bool BOUNDARY { get; private set; }
 
     public SignalSet Emit(ushort ir, TrapUnit trapUnit)
     {
@@ -28,7 +29,10 @@ public partial class MicroUnit : MicroUnitRom
     
     public void Clear(TrapUnit trapUnit)
     {
-        decoded = !trapUnit.TRAP ? Decoder.FETCH() : Decoder.TRAP();
+        if (trapUnit.TRAP) WAIT = false;
+        
+        if(!WAIT) decoded = !trapUnit.TRAP ? Decoder.FETCH() : Decoder.TRAP();
+        
         registersIndex = 0;
         currentCycle = 0;
         BOUNDARY = false;

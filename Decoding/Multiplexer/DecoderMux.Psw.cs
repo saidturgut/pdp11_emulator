@@ -25,4 +25,15 @@ public partial class DecoderMux
         
         return decoded;
     }
+
+    protected Decoded SPL(ushort ir)
+    {
+        Decoded decoded = new()
+        {
+            CycleLatch = (byte)((ir & 0x7) << 5),
+            FlagMask = PswFlag.P5 | PswFlag.P6 | PswFlag.P7,
+            MicroCycles = [MicroCycle.EXECUTE_PSW]
+        };
+        return decoded;
+    }
 }

@@ -1,47 +1,44 @@
 namespace pdp11_emulator.Signaling;
-using Executing.Computing;
 using Decoding;
 using Cycles;
 
-public class TrapUnit
+public class TrapUnit : TrapUnitRom
 {
-    private static readonly Dictionary<TrapVector, ushort> VectorTable = new()
+    private TrapVector?[] TrapRequests = new  TrapVector?[5];
+    
+    public ushort VECTOR { get; private set; }
+    public bool ABORT { get; private set; }
+    public bool TRAP { get; private set; }
+    
+    public void Request(TrapVector vector)
     {
-        {TrapVector.ODD_ADDRESS, 0x4 }, {TrapVector.ILLEGAL_INSTRUCTION, 0x10 },
-        {TrapVector.DIVIDE_BY_ZERO, 0x10 }, {TrapVector.OVERFLOW, 0x10 },
-        {TrapVector.BPT, 0x14 }, {TrapVector.IOT, 0x20 }, {TrapVector.EMT, 0x30 },
-        {TrapVector.TRACE, 0x14 }, {TrapVector.TRAP, 0x34 }, {TrapVector.POWER_FAIL, 0x24 },
-    };
+        Console.WriteLine($"TRAP REQUESTED: \"{vector}\" ");
 
-    public ushort VECTOR;
-    private bool ABORT;
-    public bool TRAP;
+        Trap request = TrapTable[vector];
 
-    public bool State()
-    {
-        if (VECTOR != 0) TRAP = true;
-        
-        return ABORT;
+        TrapRequests[request.Priority] = vector;
     }
     
-    public void Request(TrapVector vector, bool abort)
+    public void Arbitrate()
     {
-        VECTOR = VectorTable[vector];
-        ABORT = abort;
+        for (byte i = 0; i < TrapRequests.Length; i++)
+        {
+            if (TrapRequests[i] != null)
+            {
+                Trap request = TrapTable[TrapRequests[i]!.Value]; 
+                
+                VECTOR = request.Address;
+                ABORT = request.Abort;
+                TRAP = true;
+            }
+        }
     }
 
     public void Clear()
     {
+        TrapRequests =  new TrapVector?[5];
         VECTOR = 0;
         ABORT = false;
         TRAP = false;
     }
-}
-
-public enum TrapVector
-{
-    ODD_ADDRESS, ILLEGAL_INSTRUCTION, 
-    DIVIDE_BY_ZERO, OVERFLOW,
-    EMT, TRAP, BPT, IOT,
-    TRACE, POWER_FAIL, // AND DEVICE VECTORS
 }

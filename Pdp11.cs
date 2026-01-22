@@ -1,5 +1,6 @@
 namespace pdp11_emulator;
 using Executing.Components;
+using Arbitrating;
 using Signaling;
 
 public class Pdp11
@@ -36,18 +37,17 @@ public class Pdp11
     {
         UniBus.Clear();
         
+        // TERMINAL REQUESTS INTERRUPT
+        // DISK REQUESTS INTERRUPT
+        
         // REQUESTERS
         Kd11.Tick(UniBus, TrapUnit);
         
-        UniBus.Arbitrate();
+        UniBus.ArbitrateData();
 
         // RESPONDERS
         Ram.Respond(UniBus, TrapUnit);
         
         HALT = Kd11.HALT;
-        
-        return;
-        Console.WriteLine($"UNIBUS ADDRESS {UniBus.GetAddress()}");
-        Console.WriteLine($"UNIBUS DATA {UniBus.GetData()}");
     }
 }

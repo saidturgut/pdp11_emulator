@@ -2,6 +2,7 @@ namespace pdp11_emulator;
 using Executing.Components;
 using Executing;
 using Signaling;
+using Arbitrating;
 
 public class Kd11
 {
@@ -11,7 +12,8 @@ public class Kd11
     private readonly DataPath DataPath = new();
     private readonly MicroUnit MicroUnit = new();
     
-    public bool HALT;
+    public bool HALT { get; private set; }
+    public bool WAIT { get; private set; }
     
     public void Init()
     {
@@ -28,7 +30,7 @@ public class Kd11
         if(DataPath.STALL) return;
         DataPath.CpuBusDrive(CpuBus);
         DataPath.AluAction(CpuBus, AluBus, trapUnit);
-        DataPath.PswAction();
+        DataPath.PswAction(trapUnit);
         DataPath.CpuBusLatch(CpuBus, AluBus);
         DataPath.UniBusDrive(uniBus);
 
@@ -37,11 +39,17 @@ public class Kd11
         MicroUnit.Advance(trapUnit);
 
         HALT = MicroUnit.HALT;
+        WAIT = MicroUnit.WAIT;
 
-        if (!MicroUnit.BOUNDARY) return;
-        
+        if (MicroUnit.BOUNDARY) Boundary(uniBus, trapUnit);
+    }
+
+    private void Boundary(UniBus uniBus, TrapUnit trapUnit)
+    {
+        uniBus.ArbitrateInterrupt(trapUnit, DataPath.GetPriorityLevel());
+        trapUnit.Arbitrate();
         DataPath.SetVector(trapUnit.VECTOR);
-        DataPath.Commit(trapUnit.State());
+        DataPath.Commit(trapUnit.ABORT);
         MicroUnit.Clear(trapUnit);
     }
 }

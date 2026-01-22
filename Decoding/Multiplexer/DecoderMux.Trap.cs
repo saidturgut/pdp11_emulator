@@ -5,6 +5,12 @@ using Signaling;
 
 public partial class DecoderMux
 {
+    protected Decoded TRAP(TrapVector vector, TrapUnit trapUnit)
+    {
+        trapUnit.Request(vector);
+        return new Decoded();
+    }
+    
     public Decoded TRAP() => new()
     {
         Registers = [Register.PC, Register.PSW],

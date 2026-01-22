@@ -30,10 +30,6 @@ public partial class DataPath
             
             Cw = Cw,
         });
-
-        // OVERFLOW TRAP
-        if(Cw.Trace && ((output.Flags & (ushort)PswFlag.Overflow) != 0))
-            trapUnit.Request(TrapVector.OVERFLOW, true);
         
         // SET ALU BUS
         aluBus.Set(output.Result);
