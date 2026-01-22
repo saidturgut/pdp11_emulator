@@ -4,15 +4,11 @@ using Signaling;
 
 public class Alu : AluRom
 {
-    public AluOutput Compute(AluInput input, TrapUnit trapUnit)
+    public AluOutput Compute(AluInput input)
     {
         SetMasks(input.ByteMode);
         
         AluOutput output = Operations[(ushort)input.Operation](input);
-        
-        // OVERFLOW TRAP
-        if(input.Cw.Trace && ((output.Flags & (ushort)PswFlag.Overflow) != 0))
-            trapUnit.Request(TrapVector.OVERFLOW, true);
         
         // COMPUTE N AND Z FLAGS
         ushort result = (ushort)(!maskApplied 

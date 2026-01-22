@@ -2,8 +2,8 @@ namespace pdp11_emulator.Signaling;
 using Decoding;
 using Cycles;
 
-// SEQUENCER, TRAP UNIT
-public partial class ControlUnit : ControlUnitRom
+// SEQUENCER
+public partial class MicroUnit : MicroUnitRom
 {
     private readonly Decoder Decoder = new();
     
@@ -15,35 +15,20 @@ public partial class ControlUnit : ControlUnitRom
 
     public SignalSet Emit(ushort ir, TrapUnit trapUnit)
     {
-        BOUNDARY = false;
-
-        if (trapUnit.TRAP && currentCycle == 0)
-            decoded = Trap(trapUnit);
-        
-        Console.WriteLine("CURRENT CYCLE : " +  decoded.MicroCycles[currentCycle]);
-        
         if (decoded.MicroCycles[currentCycle] is MicroCycle.DECODE)
         {
             decoded = Decoder.Decode(ir, trapUnit);
-            return new SignalSet();
+            currentCycle = 0;
         }
+        
+        Console.WriteLine("CURRENT CYCLE : " +  decoded.MicroCycles[currentCycle]);
 
         return MicroCycles[(int)decoded.MicroCycles[currentCycle]]();
     }
-
-    private Decoded Trap(TrapUnit trapUnit)
-    {
-        Decoded decoded = new Decoded()
-        {
-            CycleLatch = trapUnit.VECTOR,
-        };
-        
-        return decoded;
-    }
     
-    public void Clear()
+    public void Clear(TrapUnit trapUnit)
     {
-        decoded = new Decoded();
+        decoded = !trapUnit.TRAP ? Decoder.FETCH() : Decoder.TRAP();
         registersIndex = 0;
         currentCycle = 0;
         BOUNDARY = false;

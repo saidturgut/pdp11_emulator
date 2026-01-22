@@ -43,6 +43,7 @@ public class Decoder : DecoderMux
         if((ir & 0xFC00) == 0)
             return PSW(ir);
         
+        // IF FALL THROUGH ->
         trapUnit.Request(TrapVector.ILLEGAL_INSTRUCTION, true);
         return new Decoded();
     }

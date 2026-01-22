@@ -22,7 +22,17 @@ public partial class DecoderMux
                 0x37 => Operation.SXT,
                 _ => SingleOperandTable[(ir >> 6) & 0x7],
             },
+            
+            MicroCycles = 
+            [
+                ..AddressEngine[(ir >> 3) & 0x7],
+                MicroCycle.EXECUTE_EA
+            ]
         };
+        
+        if (decoded.Operation is not Operation.PASS)
+            decoded.MicroCycles.Add(((ir >> 3) & 0x7) == 0 ? MicroCycle.TMP_TO_REG : MicroCycle.TMP_TO_UNI);
+        
         if (ir >> 15 != 0)
             decoded.CycleMode = CycleMode.BYTE_MODE;
         
@@ -34,15 +44,6 @@ public partial class DecoderMux
             Operation.SXT => FlagMasks.Table[FlagMask.Z],
             _ => FlagMasks.Table[FlagMask.NZOC]
         };
-        
-        // EA AND EXE ENGINES
-        decoded.MicroCycles.AddRange(AddressEngine[(ir >> 3) & 0x7]);
-        decoded.MicroCycles.Add(MicroCycle.EXECUTE_EA);
-
-        // COMMIT ENGINE
-        if (decoded.Operation is not Operation.PASS)
-            decoded.MicroCycles.Add(
-                ((ir >> 3) & 0x7) == 0 ? MicroCycle.TMP_TO_REG : MicroCycle.TMP_TO_RAM);
         
         return decoded;
     }

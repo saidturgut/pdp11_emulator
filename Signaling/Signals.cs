@@ -45,14 +45,6 @@ public enum Condition
     SOB,
 }
 
-public enum PswOperation
-{
-    NONE,
-    CLC, CLV, CLZ, CLN,
-    SEC, SEV, SEZ, SEN,
-    CCC, SCC,
-}
-
 public enum UniBusDriving
 {
     NONE, READ_BYTE, READ_WORD
@@ -63,5 +55,5 @@ public enum Register
 {
     R0 = 0, R1 = 1, R2 = 2, R3 = 3, R4 = 4, R5 = 5, SP = 6, PC = 7,
     MDR = 8, IR = 9, MAR = 10, TMP = 11, DST = 12,
-    PSW = 13, NONE = 14,
+    PSW = 13, VEC = 14, NONE = 15,
 }

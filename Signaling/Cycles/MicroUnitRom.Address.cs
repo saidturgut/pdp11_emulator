@@ -2,7 +2,7 @@ namespace pdp11_emulator.Signaling.Cycles;
 using Executing.Computing;
 
 // ADDRESS CYCLES
-public partial class ControlUnitRom
+public partial class MicroUnitRom
 {
     private static readonly Register[] TemporaryRegisters 
         = [Register.TMP, Register.DST];
@@ -13,13 +13,13 @@ public partial class ControlUnitRom
         CpuBusLatcher = TemporaryRegisters[registersIndex],
         CycleMode = decoded.CycleMode,
     };// EXIT
-    private static SignalSet REG_TO_MAR_WORD() => new()
+    private static SignalSet REG_TO_UNI_WORD() => new()
     {
         CpuBusDriver = decoded.Registers[registersIndex],
         CpuBusLatcher = Register.MAR,
         UniBusDriving = UniBusDriving.READ_WORD,
     };
-    private static SignalSet REG_TO_MAR_MOD() => new()
+    private static SignalSet REG_TO_UNI_MOD() => new()
     {
         CpuBusDriver = decoded.Registers[registersIndex],
         CpuBusLatcher = Register.MAR,
@@ -39,13 +39,13 @@ public partial class ControlUnitRom
         CpuBusLatcher = decoded.Registers[registersIndex],
     };
     
-    private static SignalSet PC_TO_MAR() => new()
+    private static SignalSet PC_TO_UNI() => new()
     {
         CpuBusDriver = Register.PC,
         CpuBusLatcher = Register.MAR,
         UniBusDriving = UniBusDriving.READ_WORD,
     };
-    private static SignalSet MDR_INDEX_MAR_MOD() => new()
+    private static SignalSet MDR_INDEX_UNI_MOD() => new()
     {
         UniBusLatching = true,
         CpuBusDriver = Register.MDR,
@@ -53,7 +53,7 @@ public partial class ControlUnitRom
         CpuBusLatcher = Register.MAR,
         UniBusDriving = GetReadMode(),
     };
-    private static SignalSet MDR_INDEX_MAR_WORD() => new()
+    private static SignalSet MDR_INDEX_UNI_WORD() => new()
     {
         UniBusLatching = true,
         CpuBusDriver = Register.MDR,
@@ -62,7 +62,7 @@ public partial class ControlUnitRom
         UniBusDriving = UniBusDriving.READ_WORD
     };
 
-    private static SignalSet MDR_TO_MAR() => new()
+    private static SignalSet MDR_TO_UNI() => new()
     {
         UniBusLatching = true,
         CpuBusDriver = Register.MDR,

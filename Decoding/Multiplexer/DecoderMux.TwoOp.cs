@@ -22,29 +22,29 @@ public partial class DecoderMux
         // ASSIGN ESSENTIALS
         Decoded decoded = new()
         {
-            Registers = [(Register)((ir >> 6)  & 0x7), (Register)(ir & 0x7)],
+            Registers = [(Register)((ir >> 6) & 0x7), (Register)(ir & 0x7)],
             Operation = TwoOperandTable[(ushort)type],
             FlagMask = FlagMasks.Table[type == TwoOperandType.MOV ? FlagMask.NZO : FlagMask.NZOC],
+            MicroCycles =
+            [
+                ..AddressEngine[(ir >> 9) & 0x7],
+
+                MicroCycle.INDEX_TOGGLE,
+
+                ..AddressEngine[(ir >> 3) & 0x7],
+                
+                type is not (TwoOperandType.MOV or TwoOperandType.CMP or TwoOperandType.BIT)
+                    ? MicroCycle.EXECUTE_EA : MicroCycle.EXECUTE_FLAGS,
+            ]
         };
-        if (byteMode)
-            decoded.CycleMode = CycleMode.BYTE_MODE;
         
-        // EFFECTIVE ADDRESS ENGINE
-        decoded.MicroCycles.AddRange(AddressEngine[(ir >> 9) & 0x7]);
-        decoded.MicroCycles.Add(MicroCycle.INDEX_TOGGLE);
-        decoded.MicroCycles.AddRange(AddressEngine[(ir >> 3) & 0x7]);
-
         // EXECUTE ENGINE
-        decoded.MicroCycles.Add(type is not (TwoOperandType.MOV or TwoOperandType.CMP or TwoOperandType.BIT)
-            ? MicroCycle.EXECUTE_EA : MicroCycle.EXECUTE_FLAGS);
-
-        // WRITE BACK ENGINE
         if (type is not (TwoOperandType.CMP or TwoOperandType.BIT))
         {
-            decoded.MicroCycles.Add(
-                ((ir >> 3) & 0x7) == 0 ? MicroCycle.TMP_TO_REG : MicroCycle.TMP_TO_RAM
-            );
+            decoded.MicroCycles.Add(((ir >> 3) & 0x7) == 0 ? MicroCycle.TMP_TO_REG : MicroCycle.TMP_TO_UNI);
         }
+        
+        if (byteMode) decoded.CycleMode = CycleMode.BYTE_MODE;
         
         return decoded;
     }

@@ -9,7 +9,7 @@ public class Kd11
     private readonly TriStateBus AluBus = new ();
     
     private readonly DataPath DataPath = new();
-    private readonly ControlUnit ControlUnit = new();
+    private readonly MicroUnit MicroUnit = new();
     
     public bool HALT;
     
@@ -22,7 +22,7 @@ public class Kd11
     {
         DataPath.Clear(CpuBus, AluBus);
         DataPath.Receive(
-        ControlUnit.Emit(DataPath.GetIr(), trapUnit));
+        MicroUnit.Emit(DataPath.GetIr(), trapUnit));
         
         DataPath.UniBusLatch(uniBus);
         if(DataPath.STALL) return;
@@ -34,10 +34,14 @@ public class Kd11
 
         DataPath.Debug();
         
-        ControlUnit.Advance();
+        MicroUnit.Advance(trapUnit);
 
-        HALT = ControlUnit.HALT;
+        HALT = MicroUnit.HALT;
 
-        if (ControlUnit.BOUNDARY) DataPath.Commit(trapUnit.State());
+        if (!MicroUnit.BOUNDARY) return;
+        
+        DataPath.SetVector(trapUnit.VECTOR);
+        DataPath.Commit(trapUnit.State());
+        MicroUnit.Clear(trapUnit);
     }
 }

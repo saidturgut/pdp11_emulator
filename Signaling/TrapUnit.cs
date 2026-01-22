@@ -1,4 +1,7 @@
 namespace pdp11_emulator.Signaling;
+using Executing.Computing;
+using Decoding;
+using Cycles;
 
 public class TrapUnit
 {
@@ -13,16 +16,26 @@ public class TrapUnit
     public ushort VECTOR;
     private bool ABORT;
     public bool TRAP;
+
+    public bool State()
+    {
+        if (VECTOR != 0) TRAP = true;
+        
+        return ABORT;
+    }
     
     public void Request(TrapVector vector, bool abort)
     {
         VECTOR = VectorTable[vector];
         ABORT = abort;
-        TRAP = true;
     }
 
-    public bool State()
-        => ABORT;
+    public void Clear()
+    {
+        VECTOR = 0;
+        ABORT = false;
+        TRAP = false;
+    }
 }
 
 public enum TrapVector

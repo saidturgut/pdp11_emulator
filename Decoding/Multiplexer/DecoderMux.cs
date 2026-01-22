@@ -10,32 +10,9 @@ public partial class DecoderMux : DecoderRom
     protected byte zzfz;
     protected byte zzzf;
 
+    public Decoded FETCH() => new()
+        { MicroCycles = [MicroCycle.FETCH_READ, MicroCycle.PC_INC, MicroCycle.FETCH_LATCH, MicroCycle.DECODE] };
+    
     protected Decoded ZERO_OPERAND(MicroCycle microCycle)
-    {
-        Decoded decoded = new();
-        decoded.MicroCycles.Add(microCycle);
-        return decoded;
-    }
-
-    protected Decoded PSW(ushort ir)
-    {
-        ushort maskBits = (ushort)(ir & 0xF);
-        
-        PswFlag mask = PswFlag.None;
-
-        if ((maskBits & 0x8) != 0) mask |= PswFlag.Negative;
-        if ((maskBits & 0x4) != 0) mask |= PswFlag.Zero;
-        if ((maskBits & 0x2) != 0) mask |= PswFlag.Overflow;
-        if ((maskBits & 0x1) != 0) mask |= PswFlag.Carry;
-
-        Decoded decoded = new()
-        {
-            CycleLatch = (ushort)((ir & 0x00F0) == 0x00B0 ? 0xFFFF : 0x0000),
-            FlagMask = mask,
-        };
-
-        decoded.MicroCycles.Add(MicroCycle.EXECUTE_PSW);
-
-        return decoded;
-    }
+        => new() { MicroCycles = [microCycle] };
 }

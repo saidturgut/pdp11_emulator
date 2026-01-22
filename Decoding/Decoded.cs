@@ -11,14 +11,12 @@ public struct Decoded()
     public Condition Condition = Condition.NONE;
     public Operation Operation = Operation.NONE;
     
-    public UniBusDriving UniBusMode = UniBusDriving.NONE;
+    public UniBusDriving MemoryMode = UniBusDriving.NONE;
     
     public PswFlag FlagMask = PswFlag.None;
     
     public CycleMode CycleMode = CycleMode.NONE;
     public ushort CycleLatch = 0;
     
-    public readonly List<MicroCycle> MicroCycles 
-        = [MicroCycle.FETCH_READ, MicroCycle.PC_INC
-            , MicroCycle.FETCH_LATCH, MicroCycle.DECODE];
+    public List<MicroCycle> MicroCycles = [MicroCycle.EMPTY];
 }

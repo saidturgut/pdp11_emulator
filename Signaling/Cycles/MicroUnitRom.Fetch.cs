@@ -2,7 +2,7 @@ namespace pdp11_emulator.Signaling.Cycles;
 using Executing.Computing;
 
 // FETCH CYCLES
-public partial class ControlUnitRom
+public partial class MicroUnitRom
 {
     private static SignalSet EMPTY() => new();
 

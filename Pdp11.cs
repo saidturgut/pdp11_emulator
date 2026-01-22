@@ -28,7 +28,7 @@ public class Pdp11
         {
             Tick();
             
-            //Thread.Sleep(50);
+            Thread.Sleep(100);
         }
     }
     

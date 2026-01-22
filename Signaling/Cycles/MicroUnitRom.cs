@@ -1,7 +1,7 @@
 namespace pdp11_emulator.Signaling.Cycles;
 using Decoding;
 
-public partial class ControlUnitRom
+public partial class MicroUnitRom
 {    
     protected static Decoded decoded = new();
     protected static byte registersIndex;
@@ -27,22 +27,25 @@ public partial class ControlUnitRom
     
         // ADDRESS ENGINE
         REG_TO_TEMP, 
-        REG_TO_MAR_MOD, REG_TO_MAR_WORD,
-        PC_TO_MAR, 
+        REG_TO_UNI_MOD, REG_TO_UNI_WORD,
+        PC_TO_UNI, 
         REG_INC, REG_DEC,
-        MDR_TO_TEMP, MDR_TO_MAR, 
-        MDR_INDEX_MAR_MOD, MDR_INDEX_MAR_WORD,
+        MDR_TO_TEMP, MDR_TO_UNI, 
+        MDR_INDEX_UNI_MOD, MDR_INDEX_UNI_WORD,
         INDEX_TOGGLE,
     
         // CONTROL ENGINE
-        REG_ALU, REG_TO_MAR,
+        REG_ALU, REG_TO_UNI,
         PC_TO_REG, REG_TO_PC, DST_TO_PC,
-        MDR_TO_REG,
+        MDR_TO_REG, REG_TO_TMP,
         
         // EXECUTE AND COMMIT ENGINE
         EXECUTE_EA, EXECUTE_FLAGS, EXECUTE_PSW,
         BRANCH_DEC, BRANCH_COMMIT,
-        TMP_TO_REG, TMP_TO_RAM,
+        TMP_TO_REG, TMP_TO_UNI,
+    
+        // TRAP ENGINE
+        SP_ALU, SP_TO_UNI, VEC_INC, VEC_TO_UNI
     ];
 }
 
@@ -55,20 +58,23 @@ public enum MicroCycle
     
     // ADDRESS ENGINE
     REG_TO_TEMP, 
-    REG_TO_MAR_MOD, REG_TO_MAR_WORD,
-    PC_TO_MAR, 
+    REG_TO_UNI_MOD, REG_TO_UNI_WORD,
+    PC_TO_UNI, 
     REG_INC, REG_DEC,
-    MDR_TO_TEMP, MDR_TO_MAR, 
-    MDR_INDEX_MAR_MOD, MDR_INDEX_MAR_WORD,
+    MDR_TO_TEMP, MDR_TO_UNI, 
+    MDR_INDEX_UNI_MOD, MDR_INDEX_UNI_WORD,
     INDEX_TOGGLE,
     
     // CONTROL ENGINE
-    REG_ALU, REG_TO_MAR,
+    REG_ALU, REG_TO_UNI,
     PC_TO_REG, REG_TO_PC, DST_TO_PC,
-    MDR_TO_REG,
+    MDR_TO_REG, REG_TO_TMP,
         
     // EXECUTE AND COMMIT ENGINE
     EXECUTE_EA, EXECUTE_FLAGS, EXECUTE_PSW,
     BRANCH_DEC, BRANCH_COMMIT,
-    TMP_TO_REG, TMP_TO_RAM,
+    TMP_TO_REG, TMP_TO_UNI,
+    
+    // TRAP ENGINE
+    SP_ALU, SP_TO_UNI, VEC_INC, VEC_TO_UNI
 }

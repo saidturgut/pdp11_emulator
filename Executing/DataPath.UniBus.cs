@@ -21,6 +21,7 @@ public partial class DataPath
         }
 
         STALL = false;
+        
         Access(Register.MDR).Set(uniBus.GetData());
     }
     

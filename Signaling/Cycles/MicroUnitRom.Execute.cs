@@ -2,9 +2,18 @@ namespace pdp11_emulator.Signaling.Cycles;
 using Executing.Components;
 
 // EXECUTE CYCLES
-public partial class ControlUnitRom
+public partial class MicroUnitRom
 {
     private static SignalSet HALT() => new();
+    
+    private static SignalSet TMP_TO_REG() => new()
+    {
+        CpuBusDriver = Register.TMP,
+        CpuBusLatcher = decoded.Registers[registersIndex],
+        CycleMode = decoded.CycleMode,
+    };
+    private static SignalSet TMP_TO_UNI() => new()
+        { UniBusDriving = GetWriteMode(), };
     
     private static SignalSet EXECUTE_EA() => new()
     {
@@ -15,7 +24,6 @@ public partial class ControlUnitRom
         
         FlagMask = decoded.FlagMask
     };
-
     private static SignalSet EXECUTE_FLAGS() => new()
     {
         CpuBusDriver = Register.TMP,

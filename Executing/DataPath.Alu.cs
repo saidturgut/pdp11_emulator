@@ -29,10 +29,16 @@ public partial class DataPath
             ByteMode = signals.CycleMode == CycleMode.BYTE_MODE,
             
             Cw = Cw,
-        }, trapUnit);
+        });
 
+        // OVERFLOW TRAP
+        if(Cw.Trace && ((output.Flags & (ushort)PswFlag.Overflow) != 0))
+            trapUnit.Request(TrapVector.OVERFLOW, true);
+        
+        // SET ALU BUS
         aluBus.Set(output.Result);
         
+        // SET FLAGS
         if(action.StepSize == 0) 
             zeroLatch = (output.Flags & (ushort)PswFlag.Zero) != 0;
         

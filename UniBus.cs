@@ -1,6 +1,5 @@
-using pdp11_emulator.Signaling;
-
-namespace pdp11_emulator.Executing.Components;
+namespace pdp11_emulator;
+using Signaling;
 
 public class UniBus
 {
@@ -33,16 +32,8 @@ public class UniBus
                 data = requester.Data;
                 operation = requester.Operation;
                 
-                
-                if(operation == UniBusDriving.WRITE_WORD)
-                    Console.WriteLine("REQUESTERRRR");
-                
                 requesters[i] = null;
                 respondPermit = true;
-                
-                Console.WriteLine(address);
-                Console.WriteLine(data);
-
                 
                 return;
             }
