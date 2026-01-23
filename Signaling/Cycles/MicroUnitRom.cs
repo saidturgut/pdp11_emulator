@@ -7,23 +7,20 @@ public partial class MicroUnitRom
     protected static byte registersIndex;
 
     private static byte GetStepSize()
-        => (byte)(decoded.CycleMode != CycleMode.BYTE_MODE || 
-                  (decoded.Registers[registersIndex] is Register.PC or Register.SP_U) ? 2 : 1);
+        => (byte)(!decoded.ByteMode || (decoded.Registers[registersIndex] is Register.PC or Register.SP_U) ? 2 : 1);
 
     private static UniBusDriving GetReadMode()
-        => decoded.CycleMode != CycleMode.BYTE_MODE
-            ? UniBusDriving.READ_WORD : UniBusDriving.READ_BYTE;
+        => !decoded.ByteMode ? UniBusDriving.READ_WORD : UniBusDriving.READ_BYTE;
     
     private static UniBusDriving GetWriteMode()
-        => decoded.CycleMode != CycleMode.BYTE_MODE
-            ? UniBusDriving.WRITE_WORD : UniBusDriving.WRITE_BYTE;
+        => !decoded.ByteMode ? UniBusDriving.WRITE_WORD : UniBusDriving.WRITE_BYTE;
 
     protected static readonly Func<SignalSet>[] MicroCycles =
     [
         EMPTY,
         //FETCH ENGINE
         FETCH_READ, PC_INC, FETCH_LATCH,
-        DECODE, HALT, WAIT,
+        DECODE, HALT, WAIT, RESET,
     
         // ADDRESS ENGINE
         REG_TO_TEMP, 
@@ -54,7 +51,7 @@ public enum MicroCycle
     EMPTY,
     //FETCH ENGINE
     FETCH_READ, PC_INC, FETCH_LATCH,
-    DECODE, HALT, WAIT,
+    DECODE, HALT, WAIT, RESET,
     
     // ADDRESS ENGINE
     REG_TO_TEMP, 

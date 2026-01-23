@@ -14,16 +14,16 @@ public class Ram
     {
         for (int i = 0; i < image.Length; i++)
             Memory[i + startAddress] = image[i];
-
-        Memory[0x20] = 0xA;
+        
+        Memory[0x20] = 0x10;
         Memory[0x21] = 0x00;
+        Memory[0x22] = 0xFF;
+        Memory[0x23] = 0xFF;
+        
        // Memory[0x22] = 0x00;
         //Memory[0x23] = 0xC0;
-
-         /*Memory[0x10] = 0xAA;
-         Memory[0x11] = 0xAA;
-
-         Memory[0x100] = 0x20;
+        
+         /*Memory[0x100] = 0x20;
          Memory[0x101] = 0x22;
          Memory[0x102] = 0x22;
          Memory[0x103] = 0x22;

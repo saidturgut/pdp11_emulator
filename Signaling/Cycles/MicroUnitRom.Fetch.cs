@@ -4,8 +4,6 @@ using Executing.Computing;
 // FETCH CYCLES
 public partial class MicroUnitRom
 {
-    private static SignalSet EMPTY() => new();
-
     private static SignalSet FETCH_READ() => new()
     {
         CpuBusDriver = Register.PC,

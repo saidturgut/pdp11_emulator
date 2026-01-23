@@ -5,17 +5,42 @@ using Components;
 
 public partial class DataPath
 {
-    private readonly ControlWord Cw = new ();
+    private readonly Psw Psw = new ();
 
     private bool zeroLatch;
+    
+    public void StatusWord(TrapUnit trapUnit, bool START)
+    {        
+        if (START)
+        {
+            if(Signals.SuppressTrace) SUPPRESSED = 2;
+            
+            Psw.SetMask(PswFlag.PMOD1 | PswFlag.PMOD2);
+            Psw.Set((ushort)(Psw.CMOD == Mode.KERNEL ? 0 : 0xFFFF));
+            
+            if (trapUnit.TRAP)
+            {
+                Psw.SetMask(PswFlag.CMOD1 | PswFlag.CMOD2);
+                Psw.Set(0); // ENTER KERNEL MODE ON TRAPS
+            }
+        }
+        Psw.SetMask(Signals.FlagMask);
+        
+        if (Psw.TRACE && !trapUnit.TRAP && SUPPRESSED == 0)
+            trapUnit.Request(TrapVector.TRACE);
 
-    public byte GetCw() => Cw.PRIORITY;
+        if (Psw.CMOD == Mode.KERNEL)
+        {
+            if(Signals.CpuBusDriver == Register.SP_U) Signals.CpuBusDriver = Register.SP_K;
+            if(Signals.CpuBusLatcher == Register.SP_U) Signals.CpuBusLatcher = Register.SP_K;
+        }
+    }
     
     public void PswAction()
     {
         if (Signals.PswAction is not null)
         {
-            PswSet(Signals.PswAction.Value.Buffer, Signals.FlagMask);
+            Psw.Set(Signals.PswAction.Value.Buffer);
         }
     }
 
@@ -23,28 +48,24 @@ public partial class DataPath
     {
         Condition.BR => true,
         
-        Condition.BEQ => Cw.ZERO,
-        Condition.BNE => !Cw.ZERO,
-        Condition.BMI => Cw.NEGATIVE,
-        Condition.BPL => !Cw.NEGATIVE,
-        Condition.BCS => Cw.CARRY,
-        Condition.BCC => !Cw.CARRY,
-        Condition.BVS => Cw.OVERFLOW,
-        Condition.BVC => !Cw.OVERFLOW,
+        Condition.BEQ => Psw.ZERO,
+        Condition.BNE => !Psw.ZERO,
+        Condition.BMI => Psw.NEGATIVE,
+        Condition.BPL => !Psw.NEGATIVE,
+        Condition.BCS => Psw.CARRY,
+        Condition.BCC => !Psw.CARRY,
+        Condition.BVS => Psw.OVERFLOW,
+        Condition.BVC => !Psw.OVERFLOW,
 
-        Condition.BGE => Cw.NEGATIVE == Cw.OVERFLOW,
-        Condition.BLT => Cw.NEGATIVE != Cw.OVERFLOW,
-        Condition.BLE => Cw.ZERO || Cw.NEGATIVE != Cw.OVERFLOW,
-        Condition.BGT => !Cw.ZERO && Cw.NEGATIVE == Cw.OVERFLOW,
-        Condition.BLOS => Cw.CARRY || Cw.ZERO,
-        Condition.BHI => !Cw.CARRY && !Cw.ZERO,
+        Condition.BGE => Psw.NEGATIVE == Psw.OVERFLOW,
+        Condition.BLT => Psw.NEGATIVE != Psw.OVERFLOW,
+        Condition.BLE => Psw.ZERO || Psw.NEGATIVE != Psw.OVERFLOW,
+        Condition.BGT => !Psw.ZERO && Psw.NEGATIVE == Psw.OVERFLOW,
+        Condition.BLOS => Psw.CARRY || Psw.ZERO,
+        Condition.BHI => !Psw.CARRY && !Psw.ZERO,
         
         Condition.SOB => !zeroLatch,
         
         _ => throw new Exception("INVALID CONDITION!!")
     };
-
-    private void PswSet(ushort flags, PswFlag mask)
-        => Access(Register.PSW).Set((ushort)
-            ((Access(Register.PSW).Get() & (ushort)~mask) | (flags & (ushort)mask)));
 }

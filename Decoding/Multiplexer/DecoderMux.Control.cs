@@ -5,7 +5,7 @@ using Signaling;
 
 public partial class DecoderMux
 {
-    protected Decoded JMP(ushort ir) => new()
+    protected static Decoded JMP(ushort ir) => new()
     {
         Registers = [(Register)(ir & 0x7), Register.PC],
 
@@ -16,7 +16,7 @@ public partial class DecoderMux
         ]
     };
 
-    protected Decoded JSR(ushort ir) => new()
+    protected static Decoded JSR(ushort ir) => new()
     {
         Registers = [(Register)((ir >> 6) & 0x7), (Register)(ir & 0x7)],
         Operation = Operation.SUB,
@@ -37,7 +37,7 @@ public partial class DecoderMux
         ]
     };
 
-    protected Decoded RTS(ushort ir) => new()
+    protected static Decoded RTS(ushort ir) => new()
     {
         Registers = [(Register)(ir & 0x7)],
         Operation = Operation.ADD,

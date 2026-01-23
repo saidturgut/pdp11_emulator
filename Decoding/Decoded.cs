@@ -15,7 +15,8 @@ public struct Decoded()
     
     public PswFlag FlagMask = PswFlag.NONE;
     
-    public CycleMode CycleMode = CycleMode.NONE;
+    public bool SuppressTrace = false;
+    public bool ByteMode = false;
     public ushort CycleLatch = 0;
     
     public List<MicroCycle> MicroCycles = [MicroCycle.EMPTY];

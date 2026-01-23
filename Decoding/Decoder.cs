@@ -9,18 +9,24 @@ public class Decoder : DecoderMux
     {
         {0x00, MicroCycle.HALT}, // HALT
         {0x01, MicroCycle.WAIT}, // WAIT
+        {0x05, MicroCycle.RESET}, // RESET
         {0xA0, MicroCycle.EMPTY} // NOP
     };
     
-    public Decoded Decode(ushort ir, TrapUnit trapUnit)
+    public  Decoded Decode(ushort ir, TrapUnit trapUnit)
     {
         SetNibbles(ir);
         
         if (FixedOpcodes.TryGetValue(ir, out var cycle))
             return ZERO_OPERAND(cycle);
 
-        if (ir is 3 or 4)
-            return TRAP(ir == 3 ? TrapVector.BPT : TrapVector.IOT, trapUnit);
+        switch (ir)
+        {
+            case 2: return RTI(false);
+            case 3: return TRAP(TrapVector.BPT, trapUnit);
+            case 4: return TRAP(TrapVector.IOT, trapUnit);
+            case 6: return RTI(true);
+        }
         
         if (fzzz is (>= 1 and <= 6) or (>= 9 and <= 0xE))
             return TWO_OPERAND(ir);
@@ -29,6 +35,9 @@ public class Decoder : DecoderMux
             || ir >> 6 is 3 or 0x37)
             return ONE_OPERAND(ir);
 
+        if ((ir >> 9) >= 0x38 && (ir >> 9) <= 0x3C) 
+            return ONE_HALF_OPERAND(ir);
+        
         switch (ir >> 8)
         {
             case 0x88 : return TRAP(TrapVector.EMT, trapUnit);
@@ -42,10 +51,10 @@ public class Decoder : DecoderMux
         
         switch (ir >> 9)
         {
-            case 0x4: return JSR(ir);
+            case 0x4: return JSR(ir); 
             case 0x3F: return SOB(ir);
         }
-
+        
         switch (ir >> 3)
         {
             case 0x10: return RTS(ir);

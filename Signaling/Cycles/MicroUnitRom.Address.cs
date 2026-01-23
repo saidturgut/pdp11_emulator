@@ -11,7 +11,7 @@ public partial class MicroUnitRom
     {
         CpuBusDriver = decoded.Registers[registersIndex],
         CpuBusLatcher = TemporaryRegisters[registersIndex],
-        CycleMode = decoded.CycleMode,
+        UseByteMode = decoded.ByteMode,
     };// EXIT
     private static SignalSet REG_TO_UNI_WORD() => new()
     {
@@ -74,7 +74,7 @@ public partial class MicroUnitRom
         UniBusLatching = true,
         CpuBusDriver = Register.MDR,
         CpuBusLatcher = TemporaryRegisters[registersIndex],
-        CycleMode = decoded.CycleMode,
+        UseByteMode = decoded.ByteMode,
     };// EXIT
     
     private static SignalSet INDEX_TOGGLE() => new();

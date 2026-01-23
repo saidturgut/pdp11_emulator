@@ -24,9 +24,9 @@ public partial class DataPath
                 ? Access(action.RegisterOperand).Get() 
                 : action.StepSize),
             
-            ByteMode = Signals.CycleMode == CycleMode.BYTE_MODE,
+            ByteMode = Signals.UseByteMode,
             
-            Cw = Cw,
+            Cw = Psw,
         });
         
         // SET ALU BUS
@@ -36,9 +36,9 @@ public partial class DataPath
         if(action.StepSize == 0) 
             zeroLatch = (output.Flags & (ushort)PswFlag.ZERO) != 0;
         
-        PswSet(output.Flags, Signals.FlagMask);
+        Psw.Set(output.Flags);
     }
 
     private ushort InputMask(ushort target)
-        => Signals.CycleMode != CycleMode.BYTE_MODE ? target : (byte)(target & 0x00FF);
+        => !Signals.UseByteMode ? target : (byte)(target & 0x00FF);
 }

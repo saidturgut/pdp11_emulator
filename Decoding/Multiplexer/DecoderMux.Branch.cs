@@ -5,7 +5,7 @@ using Signaling;
 
 public partial class DecoderMux
 {
-    protected Decoded BRANCH(ushort ir) => new()
+    protected static Decoded BRANCH(ushort ir) => new()
     {
         Operation = Operation.BRANCH,
         CycleLatch = (ushort)(ir & 0xFF),
@@ -14,7 +14,7 @@ public partial class DecoderMux
         MicroCycles = [ MicroCycle.BRANCH_COMMIT ],
     };
 
-    protected Decoded SOB(ushort ir) => new()
+    protected static Decoded SOB(ushort ir) => new()
     {
         Registers = [(Register)((ir >> 6) & 0x7)],
 

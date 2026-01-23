@@ -22,7 +22,7 @@ public partial class MicroUnit : MicroUnitRom
             currentCycle = 0;
         }
         
-        Console.WriteLine("CURRENT CYCLE : " +  decoded.MicroCycles[currentCycle]);
+        Console.WriteLine($"\nCURRENT CYCLE : {decoded.MicroCycles[currentCycle]}");
 
         return MicroCycles[(int)decoded.MicroCycles[currentCycle]]();
     }

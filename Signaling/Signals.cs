@@ -8,21 +8,17 @@ public struct SignalSet()
     public bool UniBusLatching = false; // MDR
     public Register CpuBusDriver = Register.NONE;
     
-    public Condition Condition = Condition.NONE;
-    
     public AluAction? AluAction = null;
     public PswAction? PswAction = null;
+    
+    public Condition Condition = Condition.NONE;
     
     public Register CpuBusLatcher = Register.NONE;
     public UniBusDriving UniBusDriving = UniBusDriving.NONE; // MAR
     
     public PswFlag FlagMask = PswFlag.NONE;
-    public CycleMode CycleMode = CycleMode.NONE;
-}
-
-public enum CycleMode
-{
-    NONE, BYTE_MODE
+    public bool UseByteMode = false;
+    public bool SuppressTrace = false;
 }
 
 public struct AluAction(Operation operation, Register registerOperand, ushort stepSize)
@@ -56,5 +52,5 @@ public enum Register
     NONE = -1,
     R0 = 0, R1 = 1, R2 = 2, R3 = 3, R4 = 4, R5 = 5, SP_U = 6, PC = 7,
     MDR = 8, IR = 9, MAR = 10, TMP = 11, DST = 12,
-    PSW = 13, VEC = 14, SP_K = 15,
+    VEC = 13, SP_K = 14, PSW = 15,
 }

@@ -5,7 +5,7 @@ using Signaling;
 
 public partial class DecoderMux
 {
-    protected Decoded TWO_OPERAND(ushort ir)
+    protected static Decoded TWO_OPERAND(ushort ir)
     {
         // SELECT TYPE
         byte operation = fzzz;
@@ -35,7 +35,9 @@ public partial class DecoderMux
                 
                 type is not (TwoOperandType.MOV or TwoOperandType.CMP or TwoOperandType.BIT)
                     ? MicroCycle.EXECUTE_EA : MicroCycle.EXECUTE_FLAGS,
-            ]
+            ],
+            
+            ByteMode = byteMode,
         };
         
         // EXECUTE ENGINE
@@ -43,8 +45,6 @@ public partial class DecoderMux
         {
             decoded.MicroCycles.Add(((ir >> 3) & 0x7) == 0 ? MicroCycle.TMP_TO_REG : MicroCycle.TMP_TO_UNI);
         }
-        
-        if (byteMode) decoded.CycleMode = CycleMode.BYTE_MODE;
         
         return decoded;
     }
@@ -55,7 +55,7 @@ public partial class DecoderMux
         ADD = 0x6, SUB = 0x7,
     }
 
-    public Operation[] TwoOperandTable =
+    public static readonly Operation[] TwoOperandTable =
     [
         Operation.NONE,
         Operation.PASS, Operation.SUB, 

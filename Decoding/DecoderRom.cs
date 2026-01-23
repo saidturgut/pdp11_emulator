@@ -4,7 +4,7 @@ using Executing.Components;
 
 public class DecoderRom
 {
-    protected readonly MicroCycle[][] AddressEngine =
+    protected static readonly MicroCycle[][] AddressEngine =
     [
         // 0 |  R
         [MicroCycle.REG_TO_TEMP],
@@ -34,6 +34,7 @@ public static class FlagMasks
 {
     public static readonly Dictionary<FlagMask, PswFlag> Table = new()
     {
+        { FlagMask.ALL, PswFlag.CMOD2 | PswFlag.CMOD1 | PswFlag.PMOD2 | PswFlag.PMOD1 | PswFlag.P7 |PswFlag.P6 | PswFlag.P5 | PswFlag.TRACE | PswFlag.NEGATIVE | PswFlag.ZERO | PswFlag.OVERFLOW | PswFlag.CARRY },
         { FlagMask.NZOC, PswFlag.NEGATIVE | PswFlag.ZERO | PswFlag.OVERFLOW | PswFlag.CARRY },
         { FlagMask.NZO, PswFlag.NEGATIVE | PswFlag.ZERO | PswFlag.OVERFLOW },
         { FlagMask.NZ, PswFlag.NEGATIVE | PswFlag.ZERO },
@@ -41,7 +42,7 @@ public static class FlagMasks
     };
 }
 
-public enum FlagMask
+public  enum FlagMask
 {
-    NZOC, NZO, NZ, Z,
+    ALL, NZOC, NZO, NZ, Z,
 }

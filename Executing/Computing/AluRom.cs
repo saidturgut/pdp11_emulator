@@ -23,6 +23,7 @@ public partial class AluRom
         ZERO, COM, INC, DEC, NEG, ADC, SBC, // SINGLE OPERANDS
         ASR, ASL, ROR, ROL, SWAB, SXT, // BITWISE OPERATIONS
         BRANCH, // MISC
+        MUL, DIV, ASH, ASHC, XOR, // ONE&HALF OPERANDS
     ];
 }
 
@@ -32,6 +33,7 @@ public enum Operation
     ZERO, COM, INC, DEC, NEG, ADC, SBC, // SINGLE OPERANDS
     ASR, ASL, ROR, ROL, SWAB, SXT, // BITWISE OPERATIONS
     BRANCH, // MISC
+    MUL, DIV, ASH, ASHC, XOR, // ONE&HALF OPERANDS
 };
 
 public struct AluInput
@@ -40,7 +42,7 @@ public struct AluInput
     public ushort A;
     public ushort B;
     public bool ByteMode;
-    public ControlWord Cw;
+    public Psw Cw;
 }
 
 public struct AluOutput

@@ -5,14 +5,14 @@ using Signaling;
 
 public partial class DecoderMux : DecoderRom
 {
-    protected byte fzzz;
-    protected byte zfzz;
-    protected byte zzfz;
-    protected byte zzzf;
+    protected static byte fzzz;
+    protected static byte zfzz;
+    protected static byte zzfz;
+    protected static byte zzzf;
 
-    public Decoded FETCH() => new()
+    public static Decoded FETCH() => new()
         { MicroCycles = [MicroCycle.FETCH_READ, MicroCycle.PC_INC, MicroCycle.FETCH_LATCH, MicroCycle.DECODE] };
     
-    protected Decoded ZERO_OPERAND(MicroCycle microCycle)
+    protected static Decoded ZERO_OPERAND(MicroCycle microCycle)
         => new() { MicroCycles = [microCycle] };
 }

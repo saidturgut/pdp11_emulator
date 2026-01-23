@@ -22,6 +22,7 @@ public partial class MicroUnitRom
         CpuBusDriver = Register.SP_U,
         CpuBusLatcher = Register.MAR,
         UniBusDriving = decoded.MemoryMode,
+        SuppressTrace = decoded.SuppressTrace,
     };
     
     private static SignalSet VEC_INC() => new()

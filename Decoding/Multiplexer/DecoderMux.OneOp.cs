@@ -5,7 +5,7 @@ using Signaling;
 
 public partial class DecoderMux
 {
-    protected Decoded ONE_OPERAND(ushort ir)
+    protected static Decoded ONE_OPERAND(ushort ir)
     {
         // ASSIGN ESSENTIALS
         Decoded decoded = new()
@@ -23,18 +23,17 @@ public partial class DecoderMux
                 _ => SingleOperandTable[(ir >> 6) & 0x7],
             },
             
+            ByteMode = ir >> 15 != 0,
+            
             MicroCycles = 
             [
                 ..AddressEngine[(ir >> 3) & 0x7],
                 MicroCycle.EXECUTE_EA
-            ]
+            ],
         };
         
         if (decoded.Operation is not Operation.PASS)
             decoded.MicroCycles.Add(((ir >> 3) & 0x7) == 0 ? MicroCycle.TMP_TO_REG : MicroCycle.TMP_TO_UNI);
-        
-        if (ir >> 15 != 0)
-            decoded.CycleMode = CycleMode.BYTE_MODE;
         
         // FLAG MASK
         decoded.FlagMask = decoded.Operation switch
@@ -48,7 +47,7 @@ public partial class DecoderMux
         return decoded;
     }
 
-    private readonly Operation[] SingleOperandTable =
+    private static readonly Operation[] SingleOperandTable =
     [
         Operation.ZERO, Operation.COM, Operation.INC, Operation.DEC,
         Operation.NEG, Operation.ADC, Operation.SBC, Operation.PASS,

@@ -33,7 +33,7 @@ public class Pdp11
             
             Tick();
             
-            Thread.Sleep(25);
+            Thread.Sleep(100);
         }
     }
     

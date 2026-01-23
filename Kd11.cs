@@ -25,7 +25,7 @@ public class Kd11
         DataPath.Clear(CpuBus, AluBus);
         DataPath.Receive(
         MicroUnit.Emit(DataPath.GetIr(), trapUnit));
-        DataPath.ControlWord(trapUnit, MicroUnit.START());
+        DataPath.StatusWord(trapUnit, MicroUnit.START());
         
         DataPath.UniBusLatch(uniBus);
         if(DataPath.STALL) return;
@@ -46,7 +46,7 @@ public class Kd11
 
     private void Boundary(UniBus uniBus, TrapUnit trapUnit)
     {
-        uniBus.ArbitrateInterrupt(trapUnit, DataPath.GetCw());
+        uniBus.ArbitrateInterrupt(trapUnit, DataPath.GetPriority());
         DataPath.Commit(trapUnit);
         MicroUnit.Clear(trapUnit);
     }

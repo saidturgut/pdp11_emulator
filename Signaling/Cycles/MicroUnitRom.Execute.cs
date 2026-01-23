@@ -4,14 +4,16 @@ using Executing.Components;
 // EXECUTE CYCLES
 public partial class MicroUnitRom
 {
+    private static SignalSet EMPTY() => new();
     private static SignalSet HALT() => new();
     private static SignalSet WAIT() => new();
+    private static SignalSet RESET() => new();
     
     private static SignalSet TMP_TO_REG() => new()
     {
         CpuBusDriver = Register.TMP,
         CpuBusLatcher = decoded.Registers[registersIndex],
-        CycleMode = decoded.CycleMode,
+        UseByteMode = decoded.ByteMode,
     };
     private static SignalSet TMP_TO_UNI() => new()
         { UniBusDriving = GetWriteMode(), };
@@ -21,7 +23,7 @@ public partial class MicroUnitRom
         CpuBusDriver = Register.TMP,
         AluAction = new AluAction(decoded.Operation, Register.DST, 0),
         CpuBusLatcher = Register.TMP,
-        CycleMode = decoded.CycleMode,
+        UseByteMode = decoded.ByteMode,
         
         FlagMask = decoded.FlagMask
     };
@@ -29,7 +31,7 @@ public partial class MicroUnitRom
     {
         CpuBusDriver = Register.TMP,
         AluAction = new AluAction(decoded.Operation, Register.DST, 0),
-        CycleMode = decoded.CycleMode,
+        UseByteMode = decoded.ByteMode,
         
         FlagMask = decoded.FlagMask
     };

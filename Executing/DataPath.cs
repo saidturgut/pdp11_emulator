@@ -23,15 +23,15 @@ public partial class DataPath
         new (), // TMP * 11
         new (), // DST * 12
         
-        new (), // PSW * 13 
-        new (), // VEC * 14 
+        new (), // VEC * 13
         
-        new (), // SP_K * 15 
+        new (), // SP_K * 14 
     ];
     
     private SignalSet Signals = new ();
 
     public bool STALL { get; private set; }
+    private byte SUPPRESSED;
     
     public void Clear(TriStateBus cpuBus, TriStateBus aluBus)
     {
@@ -41,37 +41,15 @@ public partial class DataPath
 
     public void Receive(SignalSet input) 
         => Signals = input;
-
-    public void ControlWord(TrapUnit trapUnit, bool START)
-    {        
-        Cw.Update(Access(Register.PSW).Get());
-
-        if (START)
-        {
-            if (trapUnit.TRAP)
-            {            
-                PswSet(0, PswFlag.CMOD1 | PswFlag.CMOD2); // ENTER KERNEL MODE ON TRAPS
-            }
-        
-            PswSet((ushort)(Cw.CMOD == Mode.KERNEL ? 0 : 0xFFFF), PswFlag.PMOD1 | PswFlag.PMOD2);
-            
-            Cw.Update(Access(Register.PSW).Get());
-        }
-        
-        if (Cw.TRACE) trapUnit.Request(TrapVector.TRACE);
-
-        if (Cw.CMOD == Mode.KERNEL)
-        {
-            if(Signals.CpuBusDriver == Register.SP_U) Signals.CpuBusDriver = Register.SP_K;
-            if(Signals.CpuBusLatcher == Register.SP_U) Signals.CpuBusLatcher = Register.SP_K;
-        }
-    }
-
+    
     private RegisterObject Access(Register register) 
         => Registers[(ushort)register];
     
     public ushort GetIr() 
         => Registers[(ushort)Register.IR].Get();
+    
+    public byte GetPriority() 
+        => Psw.PRIORITY;
     
     public void Commit(TrapUnit trapUnit)
     {
@@ -81,12 +59,13 @@ public partial class DataPath
         
         foreach (RegisterObject register in Registers)
         {
-            if (!trapUnit.ABORT)
-            {
-                register.Commit();
-            }
-            
+            if (!trapUnit.ABORT) register.Commit();
             register.Init();
         }
+
+        if (!trapUnit.ABORT) Psw.Commit();
+        Psw.Init();
+
+        if (SUPPRESSED != 0) SUPPRESSED--;
     }
 }

@@ -1,3 +1,5 @@
+using pdp11_emulator.Decoding;
+
 namespace pdp11_emulator.Executing;
 using Signaling;
 using Components;
@@ -9,12 +11,10 @@ public partial class DataPath
         if(Signals.CpuBusDriver is Register.NONE)
             return;
 
-        ushort value = Access(Signals.CpuBusDriver).Get();
-
-        Console.WriteLine(Signals.CpuBusDriver);
+        ushort value = Signals.CpuBusDriver != Register.PSW 
+            ? Access(Signals.CpuBusDriver).Get() : Psw.Get();
         
-        cpuBus.Set((ushort)(Signals.CycleMode != CycleMode.BYTE_MODE 
-            ? value : value & 0x00FF));
+        cpuBus.Set((ushort)(!Signals.UseByteMode ? value : value & 0x00FF));
     }
     
     public void CpuBusLatch(TriStateBus cpuBus, TriStateBus aluBus)
@@ -27,8 +27,12 @@ public partial class DataPath
 
         if(Signals.Condition != Condition.NONE)
             if(!CheckCondition()) return;
-        
-        Console.WriteLine(Signals.CpuBusLatcher);
+
+        if (Signals.CpuBusLatcher == Register.PSW)
+        {
+            Psw.SetMask(FlagMasks.Table[FlagMask.ALL]);
+            Psw.Set(cpuBus.Get()); return;
+        }
         
         Access(Signals.CpuBusLatcher).Set(cpuBus.Get());
     }
