@@ -13,7 +13,7 @@ public partial class DataPath
         new (), // R3 * 3
         new (), // R4 * 4
         new (), // R5 * 5
-        new (), // SP * 6
+        new (), // SP_U * 6
         new (), // PC * 7
         
         new (), // MDR * 8
@@ -25,9 +25,11 @@ public partial class DataPath
         
         new (), // PSW * 13 
         new (), // VEC * 14 
+        
+        new (), // SP_K * 15 
     ];
     
-    private SignalSet signals;
+    private SignalSet Signals = new ();
 
     public bool STALL { get; private set; }
     
@@ -38,22 +40,51 @@ public partial class DataPath
     }
 
     public void Receive(SignalSet input) 
-        => signals = input;
+        => Signals = input;
+
+    public void ControlWord(TrapUnit trapUnit, bool START)
+    {        
+        Cw.Update(Access(Register.PSW).Get());
+
+        if (START)
+        {
+            if (trapUnit.TRAP)
+            {            
+                PswSet(0, PswFlag.CMOD1 | PswFlag.CMOD2); // ENTER KERNEL MODE ON TRAPS
+            }
+        
+            PswSet((ushort)(Cw.CMOD == Mode.KERNEL ? 0 : 0xFFFF), PswFlag.PMOD1 | PswFlag.PMOD2);
+            
+            Cw.Update(Access(Register.PSW).Get());
+        }
+        
+        if (Cw.TRACE) trapUnit.Request(TrapVector.TRACE);
+
+        if (Cw.CMOD == Mode.KERNEL)
+        {
+            if(Signals.CpuBusDriver == Register.SP_U) Signals.CpuBusDriver = Register.SP_K;
+            if(Signals.CpuBusLatcher == Register.SP_U) Signals.CpuBusLatcher = Register.SP_K;
+        }
+    }
 
     private RegisterObject Access(Register register) 
         => Registers[(ushort)register];
     
     public ushort GetIr() 
         => Registers[(ushort)Register.IR].Get();
-
-    public void SetVector(ushort value)
-        => Access(Register.VEC).Set(value);
-
-    public void Commit(bool abort)
+    
+    public void Commit(TrapUnit trapUnit)
     {
+        trapUnit.Arbitrate();
+
+        Access(Register.VEC).Set(trapUnit.VECTOR);
+        
         foreach (RegisterObject register in Registers)
         {
-            if (!abort) register.Commit();
+            if (!trapUnit.ABORT)
+            {
+                register.Commit();
+            }
             
             register.Init();
         }

@@ -16,7 +16,7 @@ public struct SignalSet()
     public Register CpuBusLatcher = Register.NONE;
     public UniBusDriving UniBusDriving = UniBusDriving.NONE; // MAR
     
-    public PswFlag FlagMask = PswFlag.None;
+    public PswFlag FlagMask = PswFlag.NONE;
     public CycleMode CycleMode = CycleMode.NONE;
 }
 
@@ -53,7 +53,8 @@ public enum UniBusDriving
 
 public enum Register
 {
-    R0 = 0, R1 = 1, R2 = 2, R3 = 3, R4 = 4, R5 = 5, SP = 6, PC = 7,
+    NONE = -1,
+    R0 = 0, R1 = 1, R2 = 2, R3 = 3, R4 = 4, R5 = 5, SP_U = 6, PC = 7,
     MDR = 8, IR = 9, MAR = 10, TMP = 11, DST = 12,
-    PSW = 13, VEC = 14, NONE = 15,
+    PSW = 13, VEC = 14, SP_K = 15,
 }

@@ -6,9 +6,9 @@ public partial class MicroUnitRom
 {
     private static SignalSet SP_ALU() => new()
     {
-        CpuBusDriver = Register.SP,
+        CpuBusDriver = Register.SP_U,
         AluAction = new AluAction(decoded.Operation, Register.NONE, 2),
-        CpuBusLatcher = Register.SP,
+        CpuBusLatcher = Register.SP_U,
     };
         
     private static SignalSet REG_TO_TMP() => new()
@@ -19,7 +19,7 @@ public partial class MicroUnitRom
     
     private static SignalSet SP_TO_UNI() => new()
     {
-        CpuBusDriver = Register.SP,
+        CpuBusDriver = Register.SP_U,
         CpuBusLatcher = Register.MAR,
         UniBusDriving = decoded.MemoryMode,
     };

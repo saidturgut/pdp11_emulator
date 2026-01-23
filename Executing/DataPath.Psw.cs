@@ -9,46 +9,42 @@ public partial class DataPath
 
     private bool zeroLatch;
 
-    public byte GetPriorityLevel() => Cw.Priority;
+    public byte GetCw() => Cw.PRIORITY;
     
-    public void PswAction(TrapUnit trapUnit)
+    public void PswAction()
     {
-        if (Cw.Trace) trapUnit.Request(TrapVector.TRACE);
-        
-        if (signals.PswAction is not null)
+        if (Signals.PswAction is not null)
         {
-            Environment.Exit(5);
-            
-            SetFlags(signals.PswAction.Value.Buffer, signals.FlagMask);
+            PswSet(Signals.PswAction.Value.Buffer, Signals.FlagMask);
         }
     }
 
-    private bool CheckCondition() => signals.Condition switch
+    private bool CheckCondition() => Signals.Condition switch
     {
         Condition.BR => true,
         
-        Condition.BEQ => Cw.Zero,
-        Condition.BNE => !Cw.Zero,
-        Condition.BMI => Cw.Negative,
-        Condition.BPL => !Cw.Negative,
-        Condition.BCS => Cw.Carry,
-        Condition.BCC => !Cw.Carry,
-        Condition.BVS => Cw.Overflow,
-        Condition.BVC => !Cw.Overflow,
+        Condition.BEQ => Cw.ZERO,
+        Condition.BNE => !Cw.ZERO,
+        Condition.BMI => Cw.NEGATIVE,
+        Condition.BPL => !Cw.NEGATIVE,
+        Condition.BCS => Cw.CARRY,
+        Condition.BCC => !Cw.CARRY,
+        Condition.BVS => Cw.OVERFLOW,
+        Condition.BVC => !Cw.OVERFLOW,
 
-        Condition.BGE => Cw.Negative == Cw.Overflow,
-        Condition.BLT => Cw.Negative != Cw.Overflow,
-        Condition.BLE => Cw.Zero || Cw.Negative != Cw.Overflow,
-        Condition.BGT => !Cw.Zero && Cw.Negative == Cw.Overflow,
-        Condition.BLOS => Cw.Carry || Cw.Zero,
-        Condition.BHI => !Cw.Carry && !Cw.Zero,
+        Condition.BGE => Cw.NEGATIVE == Cw.OVERFLOW,
+        Condition.BLT => Cw.NEGATIVE != Cw.OVERFLOW,
+        Condition.BLE => Cw.ZERO || Cw.NEGATIVE != Cw.OVERFLOW,
+        Condition.BGT => !Cw.ZERO && Cw.NEGATIVE == Cw.OVERFLOW,
+        Condition.BLOS => Cw.CARRY || Cw.ZERO,
+        Condition.BHI => !Cw.CARRY && !Cw.ZERO,
         
         Condition.SOB => !zeroLatch,
         
         _ => throw new Exception("INVALID CONDITION!!")
     };
 
-    private void SetFlags(ushort flags, PswFlag mask)
+    private void PswSet(ushort flags, PswFlag mask)
         => Access(Register.PSW).Set((ushort)
             ((Access(Register.PSW).Get() & (ushort)~mask) | (flags & (ushort)mask)));
 }

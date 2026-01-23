@@ -3,6 +3,9 @@ using Signaling;
 
 public partial class UniBus
 {
+    public readonly DataRequest?[] DataRequests = new DataRequest?[5];
+    private readonly InterruptRequest?[] InterruptRequests = new InterruptRequest?[7];
+    
     public void RequestData(DataRequest request)
     {
         DataRequests[request.Requester] = request;
@@ -29,9 +32,10 @@ public partial class UniBus
     {
         InterruptRequests[request.Priority] = request;
     }
+    
     public void ArbitrateInterrupt(TrapUnit trapUnit, byte priorityLevel)
     {
-        for (byte i = 0; i < InterruptRequests.Length; i++)
+        for (byte i = 6; i > 0; i--)
         {
             if (InterruptRequests[i] != null)
             {

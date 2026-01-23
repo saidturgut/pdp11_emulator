@@ -9,9 +9,9 @@ public partial class MicroUnit : MicroUnitRom
     
     private ushort currentCycle;
 
-    public bool HALT { get; private set; }
-    public bool WAIT { get; private set; }
+    private bool WAIT;
     
+    public bool HALT { get; private set; }
     public bool BOUNDARY { get; private set; }
 
     public SignalSet Emit(ushort ir, TrapUnit trapUnit)
@@ -26,6 +26,8 @@ public partial class MicroUnit : MicroUnitRom
 
         return MicroCycles[(int)decoded.MicroCycles[currentCycle]]();
     }
+
+    public bool START() => currentCycle == 0;
     
     public void Clear(TrapUnit trapUnit)
     {

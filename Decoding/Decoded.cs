@@ -13,7 +13,7 @@ public struct Decoded()
     
     public UniBusDriving MemoryMode = UniBusDriving.NONE;
     
-    public PswFlag FlagMask = PswFlag.None;
+    public PswFlag FlagMask = PswFlag.NONE;
     
     public CycleMode CycleMode = CycleMode.NONE;
     public ushort CycleLatch = 0;

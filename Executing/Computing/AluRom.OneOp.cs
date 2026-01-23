@@ -20,7 +20,7 @@ public partial class AluRom
             { Result = (ushort)((input.A + 1) & xFFFF) };
 
         if (input.A == x8000 - 1)
-            output.Flags |= (ushort)PswFlag.Overflow;
+            output.Flags |= (ushort)PswFlag.OVERFLOW;
         
         return output;
     }
@@ -30,7 +30,7 @@ public partial class AluRom
             { Result = (ushort)((input.A - 1) & xFFFF) };
 
         if (input.A == x8000)
-            output.Flags |= (ushort)PswFlag.Overflow;
+            output.Flags |= (ushort)PswFlag.OVERFLOW;
         
         return output;
     }
@@ -40,29 +40,29 @@ public partial class AluRom
             { Result = (ushort)(-input.A & xFFFF) };
 
         if ((input.A & xFFFF) != 0)
-            output.Flags |= (ushort)PswFlag.Carry;
+            output.Flags |= (ushort)PswFlag.CARRY;
 
         if ((input.A & xFFFF) == x8000)
-            output.Flags |= (ushort)PswFlag.Overflow;
+            output.Flags |= (ushort)PswFlag.OVERFLOW;
         
         return output;
     }
 
     private static AluOutput ADC(AluInput input)
     {
-        AluOutput output = input.Cw.Carry ? INC(input) : PASS(input);
+        AluOutput output = input.Cw.CARRY ? INC(input) : PASS(input);
         
-        if(input.Cw.Carry && input.A == 0)
-            output.Flags |= (ushort)PswFlag.Carry;
+        if(input.Cw.CARRY && input.A == 0)
+            output.Flags |= (ushort)PswFlag.CARRY;
         
         return output;
     }
     private static AluOutput SBC(AluInput input)
     {
-        AluOutput output = input.Cw.Carry ? DEC(input) : PASS(input);
+        AluOutput output = input.Cw.CARRY ? DEC(input) : PASS(input);
         
-        if (!input.Cw.Carry || input.A != 0)
-            output.Flags |= (ushort)PswFlag.Carry;
+        if (!input.Cw.CARRY || input.A != 0)
+            output.Flags |= (ushort)PswFlag.CARRY;
         
         return output;
     }

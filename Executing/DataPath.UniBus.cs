@@ -10,7 +10,7 @@ public partial class DataPath
     
     public void UniBusLatch(UniBus uniBus)
     {
-        if(!signals.UniBusLatching)
+        if(!Signals.UniBusLatching)
             return;
         
         if (uniBus.DataRequests[(ushort)requesterType] != null)
@@ -26,7 +26,7 @@ public partial class DataPath
     
     public void UniBusDrive(UniBus uniBus)
     {
-        if(signals.UniBusDriving is UniBusDriving.NONE)
+        if(Signals.UniBusDriving is UniBusDriving.NONE)
             return;
         
         uniBus.RequestData(new DataRequest
@@ -34,7 +34,7 @@ public partial class DataPath
             Requester = (byte)requesterType,
             Address = Access(Register.MAR).Get(),
             Data = Access(Register.TMP).Get(),
-            Operation = signals.UniBusDriving,
+            Operation = Signals.UniBusDriving,
         });
     }
 }

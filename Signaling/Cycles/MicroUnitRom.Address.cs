@@ -48,16 +48,16 @@ public partial class MicroUnitRom
     private static SignalSet MDR_INDEX_UNI_MOD() => new()
     {
         UniBusLatching = true,
-        CpuBusDriver = Register.MDR,
-        AluAction = new AluAction(Operation.ADD, decoded.Registers[registersIndex], 0),
+        CpuBusDriver = decoded.Registers[registersIndex],
+        AluAction = new AluAction(Operation.ADD, Register.MDR, 0),
         CpuBusLatcher = Register.MAR,
         UniBusDriving = GetReadMode(),
     };
     private static SignalSet MDR_INDEX_UNI_WORD() => new()
     {
         UniBusLatching = true,
-        CpuBusDriver = Register.MDR,
-        AluAction = new AluAction(Operation.ADD, decoded.Registers[registersIndex], 0),
+        CpuBusDriver = decoded.Registers[registersIndex],
+        AluAction = new AluAction(Operation.ADD, Register.MDR, 0),
         CpuBusLatcher = Register.MAR,
         UniBusDriving = UniBusDriving.READ_WORD
     };

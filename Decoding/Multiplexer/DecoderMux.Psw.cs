@@ -9,12 +9,12 @@ public partial class DecoderMux
     {
         ushort maskBits = (ushort)(ir & 0xF);
         
-        PswFlag mask = PswFlag.None;
+        PswFlag mask = PswFlag.NONE;
 
-        if ((maskBits & 0x8) != 0) mask |= PswFlag.Negative;
-        if ((maskBits & 0x4) != 0) mask |= PswFlag.Zero;
-        if ((maskBits & 0x2) != 0) mask |= PswFlag.Overflow;
-        if ((maskBits & 0x1) != 0) mask |= PswFlag.Carry;
+        if ((maskBits & 0x8) != 0) mask |= PswFlag.NEGATIVE;
+        if ((maskBits & 0x4) != 0) mask |= PswFlag.ZERO;
+        if ((maskBits & 0x2) != 0) mask |= PswFlag.OVERFLOW;
+        if ((maskBits & 0x1) != 0) mask |= PswFlag.CARRY;
 
         Decoded decoded = new()
         {

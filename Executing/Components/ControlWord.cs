@@ -2,36 +2,58 @@ namespace pdp11_emulator.Executing.Components;
 
 public class ControlWord
 {
-    public bool Carry { get; private set; }
-    public bool Overflow { get; private set; }
-    public bool Zero { get; private set; }
-    public bool Negative { get; private set; }
-    public bool Trace { get; private set; }
+    public bool CARRY { get; private set; }
+    public bool OVERFLOW { get; private set; }
+    public bool ZERO { get; private set; }
+    public bool NEGATIVE { get; private set; }
+    
+    public bool TRACE { get; private set; }
 
-    public byte Priority { get; private set; }
+    public byte PRIORITY { get; private set; }
+    
+    // 00 KERNEL, 11 USER
+    public Mode PMOD { get; private set; } 
+    public Mode CMOD { get; private set; } 
 
-    public void SetFlags(ushort psw)
+    public void Update(ushort psw)
     {
-        Carry = (psw & (ushort)PswFlag.Carry) != 0;
-        Overflow = (psw & (ushort)PswFlag.Overflow) != 0;
-        Zero = (psw & (ushort)PswFlag.Zero) != 0;
-        Negative = (psw & (ushort)PswFlag.Negative) != 0;
-        Trace = (psw & (ushort)PswFlag.Trace) != 0;
+        CARRY = (psw & (ushort)PswFlag.CARRY) != 0;
+        OVERFLOW = (psw & (ushort)PswFlag.OVERFLOW) != 0;
+        ZERO = (psw & (ushort)PswFlag.ZERO) != 0;
+        NEGATIVE = (psw & (ushort)PswFlag.NEGATIVE) != 0;
+        
+        TRACE = (psw & (ushort)PswFlag.TRACE) != 0;
+        
+        PRIORITY = (byte)(((psw & (ushort)PswFlag.P7) | (psw & (ushort)PswFlag.P6) | (psw & (ushort)PswFlag.P5)) >> 5);
+
+        PMOD = (Mode)(((psw & (ushort)PswFlag.PMOD1) | (psw & (ushort)PswFlag.PMOD2)) >> 12);
+        CMOD = (Mode)(((psw & (ushort)PswFlag.CMOD1) | (psw & (ushort)PswFlag.CMOD2)) >> 14);
     }
+}
+
+public enum Mode
+{
+    KERNEL = 0b00, USER = 0b11
 }
 
 [Flags]
 public enum PswFlag
 {
-    None = 0,
+    NONE = 0,
+    
+    CARRY = 1 << 0,
+    OVERFLOW = 1 << 1,
+    ZERO = 1 << 2,
+    NEGATIVE = 1 << 3,
+    
+    TRACE = 1 << 4,
     
     P5 = 1 << 5,
     P6 = 1 << 6,
     P7 = 1 << 7,
     
-    Trace = 1 << 11,
-    Negative = 1 << 12,
-    Zero = 1 << 13,
-    Overflow = 1 << 14,
-    Carry = 1 << 15,
+    PMOD1 = 1 << 12,
+    PMOD2 = 1 << 13,
+    CMOD1 = 1 << 14,
+    CMOD2 = 1 << 15,
 }

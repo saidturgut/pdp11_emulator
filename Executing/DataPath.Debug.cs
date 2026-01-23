@@ -12,25 +12,29 @@ public partial class DataPath
         Access(Register.R3).Debug(0x300);
         Access(Register.R4).Debug(0x400);
         Access(Register.R5).Debug(0x500);
-        Access(Register.SP).Debug(0x200);
+        Access(Register.SP_U).Debug(0x200);
+        Access(Register.SP_K).Debug(0x1000);
         //Access(Register.R7).Debug(0x2000);
-        //Access(Register.PSW).Debug(0xFFFF);
+        Access(Register.PSW).Debug(0xC000);
     }
 
     public void Debug()
     {
         ushort flags = Access(Register.PSW).Get();
+        Cw.Update(flags);
+        
         Console.WriteLine($"PC: {O(Access(Register.PC).Get())}");
-        Console.WriteLine($"SP: {O(Access(Register.SP).Get())}");
-        for (int i = 0; i < 6; i++) Console.WriteLine($"R{i}: {O(Access((Register)i).Get())}");
+        Console.WriteLine($"SP_K: {O(Access(Register.SP_K).Get())}");
+        Console.WriteLine($"SP_U: {O(Access(Register.SP_U).Get())}");
+        //for (int i = 0; i < 6; i++) Console.WriteLine($"R{i}: {O(Access((Register)i).Get())}");
         Console.WriteLine($"MDR: {O(Access(Register.MDR).Get())}");
         Console.WriteLine($"IR: {O(Access(Register.IR).Get())}");
         Console.WriteLine($"MAR: {O(Access(Register.MAR).Get())}");
         Console.WriteLine($"TMP: {O(Access(Register.TMP).Get())}");
         Console.WriteLine($"DST: {O(Access(Register.DST).Get())}");
         Console.WriteLine($"VEC: {O(Access(Register.VEC).Get())}");
-        Console.WriteLine($"C O Z N T P P P");
-        Console.WriteLine($"{(flags >> 15) & 1} {(flags >> 14) & 1} {(flags >> 13) & 1} {(flags >> 12) & 1} {(flags >> 11) & 1} {(flags >> 7) & 1} {(flags >> 6) & 1} {(flags >> 5) & 1}");
+        Console.WriteLine($"COZN T PPP PM CM");
+        Console.WriteLine($"{(flags >> 0) & 1}{(flags >> 1) & 1}{(flags >> 2) & 1}{(flags >> 3) & 1} {(flags >> 4) & 1} {(flags >> 7) & 1}{(flags >> 6) & 1}{(flags >> 5) & 1} {(flags >> 13) & 1}{(flags >> 12) & 1} {(flags >> 15) & 1}{(flags >> 14) & 1}");
     }
     
     private string O(int input)

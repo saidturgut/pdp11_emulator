@@ -34,10 +34,10 @@ public static class FlagMasks
 {
     public static readonly Dictionary<FlagMask, PswFlag> Table = new()
     {
-        { FlagMask.NZOC, PswFlag.Negative | PswFlag.Zero | PswFlag.Overflow | PswFlag.Carry },
-        { FlagMask.NZO, PswFlag.Negative | PswFlag.Zero | PswFlag.Overflow },
-        { FlagMask.NZ, PswFlag.Negative | PswFlag.Zero },
-        { FlagMask.Z, PswFlag.Zero },
+        { FlagMask.NZOC, PswFlag.NEGATIVE | PswFlag.ZERO | PswFlag.OVERFLOW | PswFlag.CARRY },
+        { FlagMask.NZO, PswFlag.NEGATIVE | PswFlag.ZERO | PswFlag.OVERFLOW },
+        { FlagMask.NZ, PswFlag.NEGATIVE | PswFlag.ZERO },
+        { FlagMask.Z, PswFlag.ZERO },
     };
 }
 

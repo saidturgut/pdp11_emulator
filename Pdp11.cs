@@ -16,6 +16,8 @@ public class Pdp11
     private readonly Ram Ram = new ();
     
     private bool HALT;
+
+    private int debugger;
     
     public void Power() => Clock();
 
@@ -27,9 +29,11 @@ public class Pdp11
         
         while (!HALT)
         {
+            debugger++;
+            
             Tick();
             
-            Thread.Sleep(100);
+            Thread.Sleep(25);
         }
     }
     
@@ -39,7 +43,22 @@ public class Pdp11
         
         // TERMINAL REQUESTS INTERRUPT
         // DISK REQUESTS INTERRUPT
-        
+
+        if (debugger == 20)
+        {
+            UniBus.RequestInterrupt(new InterruptRequest()
+            {
+                Vector = TrapVector.IOT,
+                Priority = 2,
+            });
+            
+            UniBus.RequestInterrupt(new InterruptRequest()
+            {
+                Vector = TrapVector.BUS_ERROR,
+                Priority = 6,
+            });
+        }
+
         // REQUESTERS
         Kd11.Tick(UniBus, TrapUnit);
         

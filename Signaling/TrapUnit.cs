@@ -4,7 +4,7 @@ using Cycles;
 
 public class TrapUnit : TrapUnitRom
 {
-    private TrapVector?[] TrapRequests = new  TrapVector?[5];
+    private TrapVector?[] TrapRequests = new  TrapVector?[6];
     
     public ushort VECTOR { get; private set; }
     public bool ABORT { get; private set; }
@@ -25,13 +25,15 @@ public class TrapUnit : TrapUnitRom
         {
             if (TrapRequests[i] != null)
             {
-                Trap request = TrapTable[TrapRequests[i]!.Value]; 
-                
+                Trap request = TrapTable[TrapRequests[i]!.Value];
+
                 VECTOR = request.Address;
                 ABORT = request.Abort;
                 TRAP = true;
+                return;
             }
         }
+        Clear();
     }
 
     public void Clear()

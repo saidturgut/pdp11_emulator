@@ -14,10 +14,10 @@ public partial class AluRom
         output.Result = (ushort)(sum & xFFFF);
         
         if ((sum & x10000) != 0)
-            output.Flags |= (ushort)PswFlag.Carry;
+            output.Flags |= (ushort)PswFlag.CARRY;
 
         if ((~(input.A ^ input.B) & (input.A ^ output.Result) & x8000) != 0)
-            output.Flags |= (ushort)PswFlag.Overflow;
+            output.Flags |= (ushort)PswFlag.OVERFLOW;
         
         return output;
     }
@@ -28,10 +28,10 @@ public partial class AluRom
         output.Result = (ushort)(sum & xFFFF);
         
         if ((sum & x10000) == 0)
-            output.Flags |= (ushort)PswFlag.Carry;
+            output.Flags |= (ushort)PswFlag.CARRY;
 
         if (((input.A ^ input.B) & (input.A ^ output.Result) & x8000) != 0)
-            output.Flags |= (ushort)PswFlag.Overflow;
+            output.Flags |= (ushort)PswFlag.OVERFLOW;
 
         return output;
     }

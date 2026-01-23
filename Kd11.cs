@@ -13,7 +13,7 @@ public class Kd11
     private readonly MicroUnit MicroUnit = new();
     
     public bool HALT { get; private set; }
-    public bool WAIT { get; private set; }
+    public bool START { get; private set; }
     
     public void Init()
     {
@@ -25,12 +25,13 @@ public class Kd11
         DataPath.Clear(CpuBus, AluBus);
         DataPath.Receive(
         MicroUnit.Emit(DataPath.GetIr(), trapUnit));
+        DataPath.ControlWord(trapUnit, MicroUnit.START());
         
         DataPath.UniBusLatch(uniBus);
         if(DataPath.STALL) return;
         DataPath.CpuBusDrive(CpuBus);
-        DataPath.AluAction(CpuBus, AluBus, trapUnit);
-        DataPath.PswAction(trapUnit);
+        DataPath.AluAction(CpuBus, AluBus);
+        DataPath.PswAction();
         DataPath.CpuBusLatch(CpuBus, AluBus);
         DataPath.UniBusDrive(uniBus);
 
@@ -39,17 +40,14 @@ public class Kd11
         MicroUnit.Advance(trapUnit);
 
         HALT = MicroUnit.HALT;
-        WAIT = MicroUnit.WAIT;
 
         if (MicroUnit.BOUNDARY) Boundary(uniBus, trapUnit);
     }
 
     private void Boundary(UniBus uniBus, TrapUnit trapUnit)
     {
-        uniBus.ArbitrateInterrupt(trapUnit, DataPath.GetPriorityLevel());
-        trapUnit.Arbitrate();
-        DataPath.SetVector(trapUnit.VECTOR);
-        DataPath.Commit(trapUnit.ABORT);
+        uniBus.ArbitrateInterrupt(trapUnit, DataPath.GetCw());
+        DataPath.Commit(trapUnit);
         MicroUnit.Clear(trapUnit);
     }
 }

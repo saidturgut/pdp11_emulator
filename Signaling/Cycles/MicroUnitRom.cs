@@ -8,7 +8,7 @@ public partial class MicroUnitRom
 
     private static byte GetStepSize()
         => (byte)(decoded.CycleMode != CycleMode.BYTE_MODE || 
-                  (decoded.Registers[registersIndex] is Register.PC or Register.SP) ? 2 : 1);
+                  (decoded.Registers[registersIndex] is Register.PC or Register.SP_U) ? 2 : 1);
 
     private static UniBusDriving GetReadMode()
         => decoded.CycleMode != CycleMode.BYTE_MODE

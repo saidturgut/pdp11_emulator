@@ -3,9 +3,6 @@ using Signaling;
 
 public partial class UniBus
 {    
-    public readonly DataRequest?[] DataRequests = new DataRequest?[5];
-    private readonly InterruptRequest?[] InterruptRequests = new InterruptRequest?[7];
-
     public UniBusDriving Operation {get; private set;}
     
     private ushort address;
