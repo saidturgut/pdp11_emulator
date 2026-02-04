@@ -1,21 +1,24 @@
-namespace pdp11_emulator.Arbitrating;
+namespace pdp1120.Arbitrating;
 using Signaling;
 
 public partial class UniBus
 {    
     public UniBusDriving Operation {get; private set;}
     
-    private uint address;
+    private ushort address;
     private ushort data;
     
-    public bool respondPermit { get; private set; }
+    public bool RESPOND_PERMIT { get; private set; }
+    public bool BYTE_MODE { get; private set; }
 
     public void Clear()
     {
-        respondPermit = false;
+        RESPOND_PERMIT = false;
+        BYTE_MODE = false;
+        data = 0;
     }
     
-    public uint GetAddress()
+    public ushort GetAddress()
         => address;
 
     public void SetData(ushort input)

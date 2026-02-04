@@ -1,8 +1,8 @@
-namespace pdp11_emulator.Misc;
+namespace pdp1120.Testing;
 
 internal static class Run
 {
-    private static readonly Pdp11 Pdp11 = new ();
+    private static readonly Pdp1140 Pdp1140 = new ();
 
-    private static void Main() => Pdp11.Power();
+    private static void Main() => Pdp1140.Power();
 }

@@ -1,4 +1,4 @@
-namespace pdp11_emulator.Executing;
+namespace pdp1120.Executing;
 using Signaling;
 using Components;
 
@@ -6,15 +6,15 @@ public partial class DataPath
 {
     private void DebugInit()
     {
-        Access(Register.R0).Init(0x00FF);
-        Access(Register.R1).Init(0x0F00);
+        /*Access(Register.R0).Init(0x20FF);
+        Access(Register.R1).Init(0x0F01);
         Access(Register.R2).Init(0x200);
         Access(Register.R3).Init(0x300);
         Access(Register.R4).Init(0x400);
         Access(Register.R5).Init(0x500);
         Access(Register.SP_U).Init(0x1000);
         Access(Register.SP_K).Init(0x20);
-        //Access(Register.R7).Debug(0x2000);
+        Access(Register.R7).Debug(0x2000);*/
     }
 
     public void Debug()
@@ -32,7 +32,6 @@ public partial class DataPath
         Console.WriteLine($"VEC: {O(Access(Register.VEC).Get())}");
         Console.WriteLine($"COZN T PPP PM CM");
         Console.WriteLine($"{(flags >> 0) & 1}{(flags >> 1) & 1}{(flags >> 2) & 1}{(flags >> 3) & 1} {(flags >> 4) & 1} {(flags >> 7) & 1}{(flags >> 6) & 1}{(flags >> 5) & 1} {(flags >> 13) & 1}{(flags >> 12) & 1} {(flags >> 15) & 1}{(flags >> 14) & 1}");
-        Console.WriteLine("\n*********************");
     }
     
     private string O(int input)

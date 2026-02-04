@@ -1,4 +1,4 @@
-namespace pdp11_emulator.Executing.Components;
+namespace pdp1120.Executing.Components;
 
 public class TriStateBus
 {

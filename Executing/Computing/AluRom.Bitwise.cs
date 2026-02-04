@@ -1,4 +1,4 @@
-namespace pdp11_emulator.Executing.Computing;
+namespace pdp1120.Executing.Computing;
 using Components;
 
 public partial class AluRom

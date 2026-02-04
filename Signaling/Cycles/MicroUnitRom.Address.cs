@@ -1,4 +1,4 @@
-namespace pdp11_emulator.Signaling.Cycles;
+namespace pdp1120.Signaling.Cycles;
 using Executing.Computing;
 
 // ADDRESS CYCLES

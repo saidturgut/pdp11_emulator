@@ -1,5 +1,4 @@
-namespace pdp11_emulator.Utility;
-using System.Text.RegularExpressions;
+namespace pdp1120.Testing;
 using System.Diagnostics;
 
 public static class Assembler
@@ -25,10 +24,5 @@ public static class Assembler
 
         if (proc.ExitCode != 0)
             throw new Exception($"Build failed:\n{stderr}");
-
-        
-        // clv 10100010
-        // clc 10100001
-        // sec 10110001
     } 
 }

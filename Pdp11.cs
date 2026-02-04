@@ -1,39 +1,29 @@
-using System.Transactions;
-
-namespace pdp11_emulator;
-using Executing.Components;
-using Arbitrating.Memory;
+namespace pdp1120;
 using Arbitrating;
 using Signaling;
 
-public class Pdp11
+public class Pdp1140
 {
     private readonly UniBus UniBus = new ();
     private readonly TrapUnit TrapUnit = new();
 
-    private readonly Kd11 Kd11 = new ();
+    private readonly Kd11a Kd11a = new ();
     
-    private readonly Mmu Mmu = new();
     private readonly Rom Rom = new ();
     private readonly Ram Ram = new ();
     
     private bool HALT;
-
-    private int interrupter;
     
     public void Power() => Clock();
 
     private void Clock()
     {
         Rom.Boot(Ram);
-        Mmu.Init(true);
         
-        Kd11.Init();
+        Kd11a.Init();
         
         while (!HALT)
         {
-            //interrupter++;
-            
             Tick();
             
             Thread.Sleep(100);
@@ -44,43 +34,28 @@ public class Pdp11
     {
         UniBus.Clear();
         
-        // TERMINAL REQUESTS INTERRUPT
-        // DISK REQUESTS INTERRUPT
-
-        if (interrupter == 20)// FOR DEBUGGING
-        {
-            UniBus.RequestInterrupt(new InterruptRequest()
-            {
-                Vector = TrapVector.IOT,
-                Priority = 2,
-            });
-            
-            UniBus.RequestInterrupt(new InterruptRequest()
-            {
-                Vector = TrapVector.BUS_ERROR,
-                Priority = 6,
-            });
-        }
+        // INTERRUPT
 
         // REQUESTERS
-        Kd11.Tick(UniBus, Mmu, TrapUnit);
+        Kd11a.Tick(UniBus, TrapUnit);
         
-        UniBus.ArbitrateData();
+        UniBus.ArbitrateData(TrapUnit);
 
         // RESPONDERS
-        Mmu.Respond(UniBus);
-        Ram.Respond(UniBus, TrapUnit);
         
-        HALT = Kd11.HALT;
-
-        if (Kd11.COMMIT) Commit();
+        Ram.Respond(UniBus);
+        
+        HALT = Kd11a.HALT;
+        if (Kd11a.COMMIT) Commit();
+        TrapUnit.Clear();
     }
-
+    
     private void Commit()
     {
-        Mmu.Commit(TrapUnit.ABORT);
         Ram.Commit(TrapUnit.ABORT);
 
-        Kd11.COMMIT = false;
+        Console.WriteLine("\n-->> ON BOUNDARY <<--");
+        
+        Kd11a.COMMIT = false;
     }
 }

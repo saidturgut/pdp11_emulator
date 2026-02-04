@@ -1,32 +1,9 @@
-namespace pdp11_emulator.Arbitrating;
+namespace pdp1120.Arbitrating;
 using Signaling;
 
 public partial class UniBus
 {
-    public readonly DataRequest?[] DataRequests = new DataRequest?[5];
     private readonly InterruptRequest?[] InterruptRequests = new InterruptRequest?[7];
-    
-    public void RequestData(DataRequest request)
-    {
-        DataRequests[request.Requester] = request;
-    }
-    public void ArbitrateData()
-    {
-        for (byte i = 0; i < DataRequests.Length; i++)
-        {
-            if (DataRequests[i] != null)
-            {
-                var request = DataRequests[i]!.Value;
-                Operation = request.Operation;
-                address = request.Address;
-                data = request.Data;
-                
-                DataRequests[i] = null;
-                respondPermit = true;
-                return;
-            }
-        }
-    }
     
     public void RequestInterrupt(InterruptRequest request)
     {

@@ -1,4 +1,4 @@
-namespace pdp11_emulator.Signaling;
+namespace pdp1120.Signaling;
 using Executing.Components;
 using Executing.Computing;
 using Signaling.Cycles;

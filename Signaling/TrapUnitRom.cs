@@ -1,4 +1,4 @@
-namespace pdp11_emulator.Signaling;
+namespace pdp1120.Signaling;
 
 public class TrapUnitRom
 {
@@ -30,8 +30,6 @@ public enum TrapVector
     BPT, TRACE,  // 3
     IOT, // 4
     EMT, TRAP, // 5
-    
-    INVALID_SEGMENT, WRITE_VIOLATION, LENGTH_VIOLATION
 }
 
 public struct Trap()

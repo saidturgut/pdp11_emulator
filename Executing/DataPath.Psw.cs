@@ -1,4 +1,4 @@
-namespace pdp11_emulator.Executing;
+namespace pdp1120.Executing;
 using Signaling;
 using Computing;
 using Components;

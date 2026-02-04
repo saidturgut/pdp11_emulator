@@ -1,11 +1,11 @@
-namespace pdp11_emulator.Executing;
+namespace pdp1120.Executing;
 using Signaling.Cycles;
 using Signaling;
 using Components;
 
 public partial class DataPath
 {
-    private readonly RegisterObject[] Registers =
+    private readonly ClockedRegister[] Registers =
     [
         new (), // R0 * 0
         new (), // R1 * 1
@@ -48,7 +48,7 @@ public partial class DataPath
     public void Receive(MicroUnit microUnit, TrapUnit trapUnit) 
         => Signals = microUnit.Emit(Access(Register.IR).Get(), trapUnit, Psw.CMOD);
     
-    private RegisterObject Access(Register register) 
+    private ClockedRegister Access(Register register) 
         => Registers[(ushort)register];
     
     public byte GetPriority() 
@@ -60,7 +60,7 @@ public partial class DataPath
 
         Access(Register.VEC).Set(trapUnit.VECTOR);
 
-        foreach (RegisterObject register in Registers) 
+        foreach (ClockedRegister register in Registers) 
             register.Commit(trapUnit.ABORT);
         
         if (SUPPRESSED != 0) SUPPRESSED--;

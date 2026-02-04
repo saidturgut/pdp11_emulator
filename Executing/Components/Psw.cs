@@ -1,4 +1,4 @@
-namespace pdp11_emulator.Executing.Components;
+namespace pdp1120.Executing.Components;
 
 public class Psw
 {
@@ -18,7 +18,7 @@ public class Psw
     public Mode PMOD { get; private set; } 
     public Mode CMOD { get; private set; }
     
-    public RegisterObject? PswRegister;
+    public ClockedRegister? PswRegister;
 
     public void Set(ushort input, PswFlag flagMask)
     {

@@ -1,4 +1,4 @@
-namespace pdp11_emulator.Signaling;
+namespace pdp1120.Signaling;
 using Decoding;
 using Cycles;
 

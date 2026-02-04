@@ -1,10 +1,10 @@
-namespace pdp11_emulator;
+namespace pdp1120;
 using Executing.Components;
 using Executing;
 using Signaling;
 using Arbitrating;
 
-public class Kd11
+public class Kd11a
 {
     private readonly TriStateBus CpuBus = new ();
     private readonly TriStateBus AluBus = new ();
@@ -20,7 +20,7 @@ public class Kd11
         DataPath.Init();
     }
     
-    public void Tick(UniBus uniBus, Mmu mmu, TrapUnit trapUnit)
+    public void Tick(UniBus uniBus, TrapUnit trapUnit)
     {
         DataPath.Clear(CpuBus, AluBus);
         DataPath.Receive(MicroUnit, trapUnit);
@@ -32,7 +32,7 @@ public class Kd11
         DataPath.AluAction(CpuBus, AluBus);
         DataPath.PswAction();
         DataPath.CpuBusLatch(CpuBus, AluBus);
-        DataPath.UniBusDrive(uniBus, mmu, trapUnit, MicroUnit.FETCH());
+        DataPath.UniBusDrive(uniBus, trapUnit);
 
         DataPath.Debug();
         

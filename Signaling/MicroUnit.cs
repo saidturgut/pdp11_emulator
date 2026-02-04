@@ -1,6 +1,6 @@
-using pdp11_emulator.Decoding.Multiplexer;
+using pdp1120.Decoding.Multiplexer;
 
-namespace pdp11_emulator.Signaling;
+namespace pdp1120.Signaling;
 using Executing.Components;
 using Decoding;
 using Cycles;
@@ -31,7 +31,6 @@ public partial class MicroUnit : MicroUnitRom
     }
 
     public bool START() => currentCycle == 0 && decoded.MicroCycles[currentCycle] is not MicroCycle.FETCH_READ;
-    public bool FETCH() => decoded.MicroCycles[currentCycle] is MicroCycle.FETCH_READ;
     
     public void Clear(TrapUnit trapUnit)
     {

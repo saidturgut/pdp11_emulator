@@ -1,7 +1,6 @@
-namespace pdp11_emulator.Arbitrating.Memory;
-using Executing.Components;
+namespace pdp1120;
 using Signaling;
-using Utility;
+using Testing;
 using Arbitrating;
 
 public class Ram
@@ -12,7 +11,7 @@ public class Ram
     
     private const uint startAddress = 0;
     
-    public void LoadImage(byte[] image, bool hexDump)
+    public void Init(byte[] image, bool hexDump)
     {
         for (uint i = 0; i < image.Length; i++)
             Memory[i + startAddress] = image[i];
@@ -21,43 +20,31 @@ public class Ram
             HexDump.Write(Memory);
     }
     
-    public void Respond(UniBus uniBus, TrapUnit trapUnit)
+    public void Respond(UniBus uniBus)
     {
-        if(!uniBus.respondPermit)
+        if(!uniBus.RESPOND_PERMIT)
             return;
         
         switch (uniBus.Operation)
         {
             case UniBusDriving.READ_WORD:
-                uniBus.SetData(ReadWord(uniBus.GetAddress(), trapUnit)); break;
+                uniBus.SetData(ReadWord(uniBus.GetAddress())); break;
             case UniBusDriving.READ_BYTE:
                 uniBus.SetData(ReadByte(uniBus.GetAddress())); break;
             case UniBusDriving.WRITE_WORD:
-                WriteWord(uniBus.GetAddress(), uniBus.GetData(), trapUnit); break;
+                WriteWord(uniBus.GetAddress(), uniBus.GetData()); break;
             case UniBusDriving.WRITE_BYTE:
                 WriteByte(uniBus.GetAddress(), (byte)uniBus.GetData()); break;
         } 
     }
     
-    private ushort ReadWord(uint address, TrapUnit trapUnit)
+    private ushort ReadWord(uint address)
     {
-        if (address % 2 != 0)
-        {
-            trapUnit.Request(TrapVector.ODD_ADDRESS);
-            return 0;
-        }
-        
         return (ushort)(Memory[address] | (Memory[address + 1] << 8));
     }
 
-    private void WriteWord(uint address, ushort value, TrapUnit trapUnit)
+    private void WriteWord(uint address, ushort value)
     {
-        if (address % 2 != 0)
-        {
-            trapUnit.Request(TrapVector.ODD_ADDRESS);
-            return;
-        }
-
         WriteRequests[address] = (byte)(value & 0xFF);
         WriteRequests[address + 1] = (byte)(value >> 8);
     }

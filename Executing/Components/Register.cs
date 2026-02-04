@@ -1,6 +1,6 @@
-namespace pdp11_emulator.Executing.Components;
+namespace pdp1120.Executing.Components;
 
-public class RegisterObject
+public class ClockedRegister
 {
     private ushort committed;
     private ushort value;
@@ -26,4 +26,15 @@ public class RegisterObject
         
         value = committed;
     }
+}
+
+public class MemoryRegister
+{
+    private ushort value;
+    
+    public void Set(ushort input)
+        => value = input;
+
+    public ushort Get() 
+        => value;
 }

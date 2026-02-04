@@ -1,10 +1,10 @@
-namespace pdp11_emulator.Arbitrating;
+namespace pdp1120.Arbitrating;
 using Signaling;
 
 public struct DataRequest
 {
     public byte Requester;
-    public uint Address;
+    public ushort Address;
     public ushort Data;
     public UniBusDriving Operation;
 }

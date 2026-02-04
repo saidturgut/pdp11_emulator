@@ -1,5 +1,5 @@
-namespace pdp11_emulator.Arbitrating.Memory;
-using Utility;
+namespace pdp1120;
+using Testing;
 
 public class Rom
 {
@@ -7,6 +7,6 @@ public class Rom
     {
         Assembler.Run();
         
-        ram.LoadImage(File.ReadAllBytes("test.bin"), false);
+        ram.Init(File.ReadAllBytes("test.bin"), false);
     }
 }

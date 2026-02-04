@@ -1,4 +1,4 @@
-namespace pdp11_emulator.Signaling;
+namespace pdp1120.Signaling;
 using Decoding;
 using Cycles;
 
@@ -21,6 +21,8 @@ public class TrapUnit : TrapUnitRom
     
     public void Arbitrate()
     {
+        TRAP = false;
+        
         for (byte i = 0; i < TrapRequests.Length; i++)
         {
             if (TrapRequests[i] != null)
@@ -30,13 +32,16 @@ public class TrapUnit : TrapUnitRom
                 VECTOR = request.Address;
                 ABORT = request.Abort;
                 TRAP = true;
-                return;
+                break;
             }
         }
         
-        TrapRequests = new TrapVector?[6];
+        TrapRequests =  new TrapVector?[6];
+    }
+
+    public void Clear()
+    {
         VECTOR = 0;
         ABORT = false;
-        TRAP = false;
     }
 }

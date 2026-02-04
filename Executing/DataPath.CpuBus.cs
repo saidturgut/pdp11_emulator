@@ -1,6 +1,6 @@
-using pdp11_emulator.Decoding;
+using pdp1120.Decoding;
 
-namespace pdp11_emulator.Executing;
+namespace pdp1120.Executing;
 using Signaling;
 using Components;
 
